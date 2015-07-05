@@ -255,7 +255,7 @@ public class MapsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Range Saved..!" + session.getRange(), Toast.LENGTH_SHORT).show();
                     mMap.clear();
                     Intent intent = getIntent();
-
+                    System.out.println("test");
                     finish();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
