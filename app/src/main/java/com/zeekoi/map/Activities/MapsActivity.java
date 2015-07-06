@@ -89,7 +89,7 @@ public class MapsActivity extends AppCompatActivity {
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_relative_layout);
         mMap = mapFragment.getMap(); // Might be null if Google Play services APK is not available.
-
+        System.out.println("");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         session = new SessionManager(getApplicationContext());
