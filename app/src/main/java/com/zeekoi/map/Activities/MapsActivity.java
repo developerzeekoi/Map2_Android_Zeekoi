@@ -14,9 +14,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -48,12 +48,12 @@ import com.google.gson.JsonParser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.zeekoi.map.Listeners.OnCALLWindowElemTouchListener;
+import com.zeekoi.map.Listeners.OnInfoWindowElemTouchListener;
 import com.zeekoi.map.Managers.AppLocationService;
 import com.zeekoi.map.Managers.DBController;
 import com.zeekoi.map.Managers.MapWrapperLayout;
 import com.zeekoi.map.Managers.SessionManager;
-import com.zeekoi.map.Listeners.OnCALLWindowElemTouchListener;
-import com.zeekoi.map.Listeners.OnInfoWindowElemTouchListener;
 import com.zeekoi.map.R;
 
 import java.util.ArrayList;
@@ -61,6 +61,8 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity {
     AppLocationService appLocationService;
+    DBController controller = new DBController(this);
+    boolean doubleBackToExitPressedOnce = false;
     private ViewGroup infoWindow;
     private TextView infoTitle,idForDelete;
     private TextView infoSnippet, phoneSnippet;
@@ -74,12 +76,15 @@ public class MapsActivity extends AppCompatActivity {
     private String storeid = "";
     private double latJSON;
     private double longJSON;
-    DBController controller = new DBController(this);
-    boolean doubleBackToExitPressedOnce = false;
     private List<Marker> markersList;
     private Toast mToast;
     private Marker markerTemp;
     private ProgressBar progressBar;
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +94,6 @@ public class MapsActivity extends AppCompatActivity {
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_relative_layout);
         mMap = mapFragment.getMap(); // Might be null if Google Play services APK is not available.
-        System.out.println("");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         session = new SessionManager(getApplicationContext());
@@ -263,11 +267,6 @@ public class MapsActivity extends AppCompatActivity {
             dialog.show();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static int getPixelsFromDp(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
     }
 
     public void fetchMapDataApi(double latitude, double longitude, final String range) {
