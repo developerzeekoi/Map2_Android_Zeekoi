@@ -33,5 +33,5 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile files('android-async-http-1.4.4.jar')
     compile files('gson-2.2.2.jar')
-    compile files('volley.jar')
+
 }
