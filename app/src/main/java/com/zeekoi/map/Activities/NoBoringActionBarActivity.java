@@ -120,6 +120,7 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
         } catch (NullPointerException r) {
 
         }
+
         fav = (ImageView) findViewById(R.id.fav);
         call = (ImageView) findViewById(R.id.call);
         TextView title = (TextView) findViewById(R.id.markerTitle);

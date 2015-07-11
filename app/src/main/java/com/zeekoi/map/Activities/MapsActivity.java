@@ -115,8 +115,8 @@ public class MapsActivity extends AppCompatActivity {
 
         progressBar = (GoogleProgressBar) findViewById(R.id.progressBar);
 
-        baseLoc = (Button)findViewById(R.id.baseLocation);
-        MyLoc = (Button)findViewById(R.id.myLocation);
+        baseLoc = (Button) findViewById(R.id.baseLocation);
+        MyLoc = (Button) findViewById(R.id.myLocation);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -164,7 +164,7 @@ public class MapsActivity extends AppCompatActivity {
             session.setRange("20");
         }
 
-        if(session.getButtonFlag() == null){
+        if (session.getButtonFlag() == null) {
             session.setButtonFlag("0");
         }
 
@@ -181,7 +181,7 @@ public class MapsActivity extends AppCompatActivity {
             }
         }
 
-        if(session.getButtonFlag().equals("1")){
+        if (session.getButtonFlag().equals("1")) {
 
             fetchMapDataApi(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
                     Double.longBitsToDouble(session.getLongitudeBaseLoc()),
@@ -192,12 +192,12 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                if(Double.longBitsToDouble(session.getLatitudeBaseLoc()) == 0.0){
+                if (Double.longBitsToDouble(session.getLatitudeBaseLoc()) == 0.0) {
 
                     Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
                     startActivity(BaseLocIntent);
 
-                }else{
+                } else {
                     session.setButtonFlag("1");
                     mMap.clear();
                     progressBar.setVisibility(View.VISIBLE);
@@ -311,7 +311,7 @@ public class MapsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(session.getActivitySwitchFlag() !=null) {
+        if (session.getActivitySwitchFlag() != null) {
 
             if (session.getActivitySwitchFlag().equals("1")) {
                 mMap.clear();
@@ -532,13 +532,16 @@ public class MapsActivity extends AppCompatActivity {
 //                            callIntent.setData(Uri.parse("tel:" + marker.getSnippet().toString()));
 //                            startActivity(callIntent);
 //                        }
-                        Intent io = new Intent(getApplicationContext(),NoBoringActionBarActivity.class);
-//                        String[] myStrings = new String[] {"test", "test2"};
+                        if (marker.getTitle().equals("Base Location")) {
+                            System.out.println("no activity for base location");
+                        } else {
+                            Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
+                            io.putExtra("markerID", marker.getId());
+                            session.setTemplat(marker.getPosition().latitude);
+                            session.setTempLong(marker.getPosition().longitude);
+                            startActivity(io);
+                        }
 
-                        io.putExtra("markerID",marker.getId());
-                        session.setTemplat(marker.getPosition().latitude);
-                        session.setTempLong(marker.getPosition().longitude);
-                    startActivity(io);
                     }
                 };
                 callButton.setOnTouchListener(callButtonListener);
@@ -628,11 +631,10 @@ public class MapsActivity extends AppCompatActivity {
                 }
 
 
-
                 if (markersList.size() == 0 || session.getButtonFlag().equals("1")) {
                     mToast.setText(markersList.size() + " Stores found");
                     mToast.show();
-                  markerBaseLoc = mMap.addMarker(new MarkerOptions()
+                    markerBaseLoc = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
                                     Double.longBitsToDouble(session.getLongitudeBaseLoc())))
 
@@ -672,11 +674,16 @@ public class MapsActivity extends AppCompatActivity {
                         YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
                         mToast.setText("Loading...");
                         mToast.show();
-//                        Intent callIntent = new Intent(Intent.ACTION_CALL);
-//                        callIntent.setData(Uri.parse("tel:" + marker.getSnippet().toString()));
-//                        startActivity(callIntent);
-                        Intent io = new Intent(getApplicationContext(),NoBoringActionBarActivity.class);
-                    startActivity(io);
+                        
+                        if (marker.getTitle().equals("Base Location")) {
+                        System.out.println("no activity for base location");
+                    } else {
+                        Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
+                        io.putExtra("markerID", marker.getId());
+                        session.setTemplat(marker.getPosition().latitude);
+                        session.setTempLong(marker.getPosition().longitude);
+                        startActivity(io);
+                    }
                     }
                 };
                 callButton.setOnTouchListener(callButtonListener);
