@@ -6,26 +6,41 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff080318" />
+        android:textColor="#ff161a8b"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/snippet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageButton"
-        android:layout_marginLeft="3dp"
+        android:layout_marginLeft="5dp"
         android:layout_toEndOf="@+id/imageButton"
         android:layout_toRightOf="@+id/imageButton"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ff080318" />
+        android:textColor="#ff181d8b"
+        android:layout_marginTop="4dp" />
+
+    <Button
+        android:id="@+id/call_but"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_x="11dp"
+        android:layout_y="-6dp"
+        android:text="View"
+        android:textColor="#fffef9ff"
+        android:layout_alignTop="@+id/absoluteLayout"
+        android:layout_centerHorizontal="true"
+        android:background="#ff567fc5"
+        android:layout_marginBottom="5dp" />
 
     <AbsoluteLayout
         android:id="@+id/absoluteLayout"
@@ -36,26 +51,13 @@
         android:layout_below="@+id/snippet"
         android:layout_marginTop="10dp">
 
-        <Button
-            android:id="@+id/call_but"
-            android:layout_width="75dp"
-            android:layout_height="35dp"
-            android:layout_alignBottom="@+id/button"
-            android:layout_alignTop="@+id/button"
-            android:layout_toEndOf="@+id/button"
-            android:layout_toRightOf="@+id/button"
-            android:layout_x="32dp"
-            android:layout_y="-3dp"
-            android:text="View"
-            android:textColor="#fffef9ff" />
-
 
     </AbsoluteLayout>
 
     <ImageButton
         android:id="@+id/imageButton"
-        android:layout_width="16dp"
-        android:layout_height="15dp"
+        android:layout_width="20dp"
+        android:layout_height="23dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/title"

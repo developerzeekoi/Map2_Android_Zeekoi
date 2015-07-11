@@ -4,9 +4,6 @@ package com.zeekoi.map.Activities;
  * Created by Nowfal on 7/11/2015.
  */
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -14,22 +11,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,42 +31,19 @@ import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.vstechlab.easyfonts.EasyFonts;
 import com.zeekoi.map.Managers.DBController;
 import com.zeekoi.map.Managers.SessionManager;
-import com.zeekoi.map.OverlayActionBar.AlphaForegroundColorSpan;
-import com.zeekoi.map.OverlayActionBar.KenBurnsView;
+
 import com.zeekoi.map.R;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Timer;
 
-public class NoBoringActionBarActivity extends AppCompatActivity {
+public class StoreInfoActivity extends AppCompatActivity {
 
-    private static final String TAG = "NoBoringActionBarActivity";
+    private static final String TAG = "StoreInfoActivity";
     DBController controller = new DBController(this);
-    private int mActionBarTitleColor;
-    private int mActionBarHeight;
-    private int mHeaderHeight;
-    private int mMinHeaderTranslation;
-    private ListView mListView;
-    private KenBurnsView mHeaderPicture;
-    private ImageView mHeaderLogo;
-    private View mHeader;
-    private View mPlaceHolderView;
-    private AccelerateDecelerateInterpolator mSmoothInterpolator;
-
-    private RectF mRect1 = new RectF();
-    private RectF mRect2 = new RectF();
-
-    private AlphaForegroundColorSpan mAlphaForegroundColorSpan;
-    private SpannableString mSpannableString;
-
-    private TypedValue mTypedValue = new TypedValue();
-
     private SessionManager session;
     private String markerTitle;
     private String markerSnippet;
@@ -91,7 +60,7 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_noboringactionbar);
-        setContentView(R.layout.image_layout);
+        setContentView(R.layout.storeinfo_activity);
 //        temp = (ImageView)findViewById(R.id.temp);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -123,10 +92,13 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
 
         fav = (ImageView) findViewById(R.id.fav);
         call = (ImageView) findViewById(R.id.call);
+        progressBar = (GoogleProgressBar) findViewById(R.id.progressBar);
         TextView title = (TextView) findViewById(R.id.markerTitle);
         title.setText(String.valueOf(Html.fromHtml(markerTitle)));
+        title.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
         TextView snippet = (TextView) findViewById(R.id.markerSnippet);
-        snippet.setText(markerSnippet);
+        snippet.setText("Tel. No. :  "+markerSnippet);
+        snippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
         new LoadImage().execute(imageURL);
 
         try {
@@ -204,7 +176,7 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
 //
 //
 //        mListView = (ListView) findViewById(R.id.listview);
-//        mHeader = findViewById(R.id.header);
+//        mHeader = findViewById(R.id.toolbar1);
 //        mHeaderPicture = (KenBurnsView) findViewById(R.id.header_picture);
 //        mHeaderPicture.setResourceIds(R.drawable.picture1, R.drawable.picture1);
 //        mHeaderLogo = (ImageView) findViewById(R.id.header_logo);
@@ -349,7 +321,7 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         @Override
         protected void onPreExecute() {
-//            progressBar = (GoogleProgressBar) findViewById(R.id.progressBar);
+
         }
 
         @Override
@@ -368,14 +340,15 @@ public class NoBoringActionBarActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap image) {
 
             if (image != null) {
-//                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
 //                temp.setImageBitmap(image);//setting profile image from url in do..in..backgroud task
                 ImageView header_picture = (ImageView) findViewById(R.id.headerImage);
                 header_picture.setImageBitmap(image);
 //                temp.setVisibility(View.INVISIBLE);
 
             } else {
-                Toast.makeText(NoBoringActionBarActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(StoreInfoActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
             }
         }
     }

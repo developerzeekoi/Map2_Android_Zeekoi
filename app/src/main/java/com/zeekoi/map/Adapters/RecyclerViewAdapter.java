@@ -24,6 +24,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.vstechlab.easyfonts.EasyFonts;
 import com.zeekoi.map.Managers.DBController;
 import com.zeekoi.map.R;
 
@@ -133,7 +134,9 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             }
         });
         viewHolder.nameAddress.setText(String.valueOf(Html.fromHtml(name)));
-        viewHolder.phone.setText(phone);
+        viewHolder.nameAddress.setTypeface(EasyFonts.droidSerifBold(mContext));
+        viewHolder.phone.setText("Tel. No. :  "+phone);
+        viewHolder.phone.setTypeface(EasyFonts.droidSerifBoldItalic(mContext));
         viewHolder.idForDelete.setText(id_temp);
         mItemManger.bindView(viewHolder.itemView, position);
     }

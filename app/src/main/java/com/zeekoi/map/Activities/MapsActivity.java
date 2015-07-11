@@ -9,12 +9,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -27,27 +23,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.directions.route.Route;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,6 +53,7 @@ import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.vstechlab.easyfonts.EasyFonts;
 import com.zeekoi.map.Listeners.OnCALLWindowElemTouchListener;
 import com.zeekoi.map.Listeners.OnInfoWindowElemTouchListener;
 import com.zeekoi.map.Managers.AppLocationService;
@@ -93,6 +91,7 @@ public class MapsActivity extends AppCompatActivity {
     private Location gpsLocation;
     private Marker markerBaseLoc;
     private HashMap<String, String> MarkersDB;
+    private Polyline polyline;
 
     private static final double EARTH_RADIUS = 6378100.0;
     private int offset;
@@ -227,24 +226,64 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
 
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                if (marker.getTitle().equals("Base Location")) {
-//                    System.out.println("marker clicked" + marker.getTitle());
-//                    Intent io = new Intent(getApplicationContext(),NoBoringActionBarActivity.class);
-//                    startActivity(io);
-//
-//
-//                }
-//                return false;
-//            }
-//        });
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+
+                Routing routing = new Routing(Routing.TravelMode.WALKING);
+                routing.registerListener(new RoutingListener() {
+                    @Override
+                    public void onRoutingFailure() {
+                        Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onRoutingStart() {
+
+                    }
+
+                    @Override
+                    public void onRoutingSuccess(PolylineOptions mPolyOptions, Route route) {
+                        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+
+                        mMap.moveCamera(center);
+                        if (polyline != null)
+                            polyline.remove();
+
+                        polyline = null;
+                        //adds route to the map.
+                        PolylineOptions polyOptions = new PolylineOptions();
+                        polyOptions.color(getResources().getColor(android.R.color.holo_purple));
+                        polyOptions.width(12);
+                        polyOptions.addAll(mPolyOptions.getPoints());
+                        polyline = mMap.addPolyline(polyOptions);
+
+                        // Start marker
+//                        MarkerOptions options = new MarkerOptions();
+//                        options.position(new LatLng(latitude, longitude));
+//                        options.title("My Position");
+//                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//                        mMap.addMarker(options);
+
+                        // End marker
+//                        options = new MarkerOptions();
+//                        options.position(new LatLng(marker.getPosition().latitude,marker.getPosition().longitude));
+//                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+//                        mMap.addMarker(options);
+
+
+                    }
+                });
+                routing.execute(new LatLng(latitude, longitude), new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+                return false;
+            }
+        });
 //infoWindow.setOnClickListener(new View.OnClickListener() {
 //    @Override
 //    public void onClick(View v) {
 //        System.out.println("info window clicked "+v.getId());
-//        Intent io = new Intent(getApplicationContext(),NoBoringActionBarActivity.class);
+//        Intent io = new Intent(getApplicationContext(),StoreInfoActivity.class);
 //                    startActivity(io);
 //    }
 //});
@@ -253,14 +292,29 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public View getInfoWindow(Marker marker) {
 
-                if (marker.getTitle().equals("Base Location")) {
-                    System.out.println("no activity for base location");
-                    callButton.setVisibility(View.INVISIBLE);
-                    imginfowindow.setVisibility(View.INVISIBLE);
-                } else{
-                    callButton.setVisibility(View.VISIBLE);
-                    imginfowindow.setVisibility(View.VISIBLE);
+                try {
 
+                    if (marker.getTitle().equals("My Position")) {
+                        System.out.println("no activity for base location");
+                        callButton.setVisibility(View.INVISIBLE);
+                        imginfowindow.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        callButton.setVisibility(View.VISIBLE);
+                        imginfowindow.setVisibility(View.VISIBLE);
+
+                    }
+                    if (marker.getTitle().equals("Base Location")) {
+                        System.out.println("no activity for base location");
+                        callButton.setVisibility(View.INVISIBLE);
+                        imginfowindow.setVisibility(View.INVISIBLE);
+                    } else {
+                        callButton.setVisibility(View.VISIBLE);
+                        imginfowindow.setVisibility(View.VISIBLE);
+
+                    }
+                } catch (NullPointerException rr) {
+                    rr.printStackTrace();
                 }
 //                try {
 //                    SQLiteDatabase db = controller.getWritableDatabase();
@@ -281,18 +335,33 @@ public class MapsActivity extends AppCompatActivity {
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
 //                infoWindow.setVisibility(View.VISIBLE);
-                infoTitle.setText(marker.getTitle());
-                infoSnippet.setText(marker.getSnippet());
-                markerTemp = marker;
-                if (marker.getTitle().equals("Base Location")) {
-                    System.out.println("no activity for base location");
-                    callButton.setVisibility(View.INVISIBLE);
-                    imginfowindow.setVisibility(View.INVISIBLE);
-                } else{
-                    callButton.setVisibility(View.VISIBLE);
-                    imginfowindow.setVisibility(View.VISIBLE);
+                try {
 
-                }
+
+                    infoTitle.setText(marker.getTitle());
+                    infoTitle.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
+                    infoSnippet.setText(marker.getSnippet());
+                    infoSnippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
+                    markerTemp = marker;
+                    if (marker.getTitle().equals("My Position")) {
+                        System.out.println("no activity for base location");
+                        callButton.setVisibility(View.INVISIBLE);
+                        imginfowindow.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        callButton.setVisibility(View.VISIBLE);
+                        imginfowindow.setVisibility(View.VISIBLE);
+
+                    }
+                    if (marker.getTitle().equals("Base Location")) {
+                        System.out.println("no activity for base location");
+                        callButton.setVisibility(View.INVISIBLE);
+                        imginfowindow.setVisibility(View.INVISIBLE);
+                    } else {
+                        callButton.setVisibility(View.VISIBLE);
+                        imginfowindow.setVisibility(View.VISIBLE);
+
+                    }
 //                infoButton.setVisibility(View.VISIBLE);
 //                callButton.setVisibility(View.VISIBLE);
 //                imginfowindow.setVisibility(View.VISIBLE);
@@ -307,10 +376,14 @@ public class MapsActivity extends AppCompatActivity {
 //                        }
 
 //                infoButtonListener.setMarker(marker);
-                callButtonListener.setMarker(marker);
-                // We must call this to set the current marker and infoWindow references
-                // to the MapWrapperLayout
-                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                    callButtonListener.setMarker(marker);
+                    // We must call this to set the current marker and infoWindow references
+                    // to the MapWrapperLayout
+                    mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+                } catch (NullPointerException tt) {
+                    tt.printStackTrace();
+                }
                 return infoWindow;
             }
         });
@@ -327,6 +400,7 @@ public class MapsActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        progressBar.setVisibility(View.VISIBLE);
         super.onResume();
         if (session.getActivitySwitchFlag() != null) {
 
@@ -359,7 +433,8 @@ public class MapsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //if cancel dialog box ..fetch location from network
                         Location nwLocation = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
-
+                        latitude = nwLocation.getLatitude();
+                        longitude = nwLocation.getLongitude();
                         if (nwLocation != null) {
                             fetchMapDataApi(nwLocation.getLatitude(), nwLocation.getLongitude(), session.getRange());
                         }
@@ -464,7 +539,7 @@ public class MapsActivity extends AppCompatActivity {
                     String name = jobject.get("name").getAsString().toUpperCase();
                     String address = jobject.get("address").getAsString();
                     String phone = jobject.get("phone").getAsString();
-                    String nameAddress = "<strong>" + name + "</strong><br>" + address;
+                    String nameAddress = "<strong>" + name + "</strong><br><br>" + address;
                     latJSON = jobject.get("lat").getAsDouble();
                     longJSON = jobject.get("long").getAsDouble();
                     Spanned spannedContent = Html.fromHtml(nameAddress);
@@ -479,8 +554,13 @@ public class MapsActivity extends AppCompatActivity {
                     MarkersDB.put("image_url", jobject.get("image").getAsString());
                     controller.insertMarkers(MarkersDB);
                 }
-
-
+                Marker mymarker = mMap.addMarker(new MarkerOptions()
+                        .title("My Position")
+                        .icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                        .position(new LatLng(latitude, longitude)));
+                markersList.add(mymarker);
+                mymarker.remove();
 //                if(session.getButtonFlag().equals("1")){
 //
 //                    Circle circle = mMap.addCircle(new CircleOptions()
@@ -536,7 +616,7 @@ public class MapsActivity extends AppCompatActivity {
                 callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
                     @Override
                     protected void onClickConfirmed(View v, Marker marker) {
-                        System.out.println("resonse=" + session.getResponse());
+
                         YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
 
 
@@ -551,9 +631,8 @@ public class MapsActivity extends AppCompatActivity {
                         if (marker.getTitle().equals("Base Location")) {
                             System.out.println("no activity for base location");
                         } else {
-                            mToast.setText("Loading...");
-                            mToast.show();
-                            Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
+
+                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
                             io.putExtra("markerID", marker.getId());
                             session.setTemplat(marker.getPosition().latitude);
                             session.setTempLong(marker.getPosition().longitude);
@@ -637,7 +716,7 @@ public class MapsActivity extends AppCompatActivity {
                     String name = jobject.get("name").getAsString().toUpperCase();
                     String address = jobject.get("address").getAsString();
                     String phone = jobject.get("phone").getAsString();
-                    String nameAddress = "<b>" + name + "</b><br>" + address;
+                    String nameAddress = "<b>" + name + "</b><br><br>" + address;
                     latJSON = jobject.get("lat").getAsDouble();
                     longJSON = jobject.get("long").getAsDouble();
                     Spanned spannedContent = Html.fromHtml(nameAddress);
@@ -693,16 +772,15 @@ public class MapsActivity extends AppCompatActivity {
 
 
                         if (marker.getTitle().equals("Base Location")) {
-                        System.out.println("no activity for base location");
-                    } else {
-                            mToast.setText("Loading...");
-                            mToast.show();
-                        Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
-                        io.putExtra("markerID", marker.getId());
-                        session.setTemplat(marker.getPosition().latitude);
-                        session.setTempLong(marker.getPosition().longitude);
-                        startActivity(io);
-                    }
+                            System.out.println("no activity for base location");
+                        } else {
+
+                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+                            io.putExtra("markerID", marker.getId());
+                            session.setTemplat(marker.getPosition().latitude);
+                            session.setTempLong(marker.getPosition().longitude);
+                            startActivity(io);
+                        }
                     }
                 };
                 callButton.setOnTouchListener(callButtonListener);
