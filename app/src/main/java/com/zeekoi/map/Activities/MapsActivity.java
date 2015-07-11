@@ -253,7 +253,15 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public View getInfoWindow(Marker marker) {
 
+                if (marker.getTitle().equals("Base Location")) {
+                    System.out.println("no activity for base location");
+                    callButton.setVisibility(View.INVISIBLE);
+                    imginfowindow.setVisibility(View.INVISIBLE);
+                } else{
+                    callButton.setVisibility(View.VISIBLE);
+                    imginfowindow.setVisibility(View.VISIBLE);
 
+                }
 //                try {
 //                    SQLiteDatabase db = controller.getWritableDatabase();
 //                    String flag = controller.checkDB(marker.getPosition().latitude, marker.getPosition().longitude);
@@ -276,6 +284,15 @@ public class MapsActivity extends AppCompatActivity {
                 infoTitle.setText(marker.getTitle());
                 infoSnippet.setText(marker.getSnippet());
                 markerTemp = marker;
+                if (marker.getTitle().equals("Base Location")) {
+                    System.out.println("no activity for base location");
+                    callButton.setVisibility(View.INVISIBLE);
+                    imginfowindow.setVisibility(View.INVISIBLE);
+                } else{
+                    callButton.setVisibility(View.VISIBLE);
+                    imginfowindow.setVisibility(View.VISIBLE);
+
+                }
 //                infoButton.setVisibility(View.VISIBLE);
 //                callButton.setVisibility(View.VISIBLE);
 //                imginfowindow.setVisibility(View.VISIBLE);
@@ -521,8 +538,7 @@ public class MapsActivity extends AppCompatActivity {
                     protected void onClickConfirmed(View v, Marker marker) {
                         System.out.println("resonse=" + session.getResponse());
                         YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
-                        mToast.setText("Loading...");
-                        mToast.show();
+
 
 //                        if(marker.getSnippet().toString().equals("")){
 //                            mToast.setText("Phone Number not available...");
@@ -535,6 +551,8 @@ public class MapsActivity extends AppCompatActivity {
                         if (marker.getTitle().equals("Base Location")) {
                             System.out.println("no activity for base location");
                         } else {
+                            mToast.setText("Loading...");
+                            mToast.show();
                             Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
                             io.putExtra("markerID", marker.getId());
                             session.setTemplat(marker.getPosition().latitude);
@@ -672,12 +690,13 @@ public class MapsActivity extends AppCompatActivity {
                     protected void onClickConfirmed(View v, Marker marker) {
                         System.out.println("resonse=" + session.getResponse());
                         YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
-                        mToast.setText("Loading...");
-                        mToast.show();
-                        
+
+
                         if (marker.getTitle().equals("Base Location")) {
                         System.out.println("no activity for base location");
                     } else {
+                            mToast.setText("Loading...");
+                            mToast.show();
                         Intent io = new Intent(getApplicationContext(), NoBoringActionBarActivity.class);
                         io.putExtra("markerID", marker.getId());
                         session.setTemplat(marker.getPosition().latitude);
