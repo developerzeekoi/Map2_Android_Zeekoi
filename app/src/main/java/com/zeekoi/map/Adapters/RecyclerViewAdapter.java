@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -131,7 +132,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
                 mContext.startActivity(callIntent);
             }
         });
-        viewHolder.nameAddress.setText(name);
+        viewHolder.nameAddress.setText(String.valueOf(Html.fromHtml(name)));
         viewHolder.phone.setText(phone);
         viewHolder.idForDelete.setText(id_temp);
         mItemManger.bindView(viewHolder.itemView, position);

@@ -31,9 +31,11 @@ public class DBController extends SQLiteOpenHelper {
     //Creates Table
     @Override
     public void onCreate(SQLiteDatabase database) {
-        String query;
+        String query, query_marker;
         query = "CREATE TABLE favourites ( _id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, phone TEXT, latitude TEXT, longitude TEXT)";
         database.execSQL(query);
+        query_marker = "CREATE TABLE markers ( _id INTEGER PRIMARY KEY AUTOINCREMENT, marker_id TEXT, title TEXT, snippet TEXT, image_url TEXT)";
+        database.execSQL(query_marker);
 //        for (int i=0;i<25;i++){
 //            database.execSQL("INSERT INTO favourites(name,phone,latitude,longitude) VALUES ('"+i+"asd','98745"+i+"','1234"+i+"','9874')");
 //        }
@@ -53,16 +55,26 @@ public class DBController extends SQLiteOpenHelper {
      *
      * @param queryValues
      */
-    public void insertfav(HashMap<String, String> queryValues) {
+    public void insertMarkers(HashMap<String, String> queryValues) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ID, queryValues.get("_id"));
-        values.put(NAME, queryValues.get("name"));
-        values.put(ADDRESS, queryValues.get("address"));
-        values.put(LATITUDE, queryValues.get("latitude"));
-        values.put(LONGITUDE, queryValues.get("longitude"));
-        database.insert("favourites", null, values);
+//        values.put(ID, queryValues.get("_id"));
+        values.put("marker_id", queryValues.get("marker_id"));
+        values.put("title", queryValues.get("title"));
+        values.put("snippet", queryValues.get("snippet"));
+        values.put("image_url", queryValues.get("image_url"));
+
+        database.insert("markers", null, values);
         database.close();
+        System.out.println("markers inserted "+values.size());
+    }
+
+    public void dropMarkers(){
+        SQLiteDatabase database = this.getWritableDatabase();
+        String query;
+        query = "DELETE  FROM markers";
+        database.execSQL(query);
+        System.out.println("markers values deleted");
     }
 
     /**
@@ -93,7 +105,8 @@ public class DBController extends SQLiteOpenHelper {
         return favList;
     }
 
-    public String checkDB(double lat, double lon) {
+    public String checkDB(Double lat, Double lon) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         System.out.println("SELECT * FROM favourites where latitude='" + lat + "'and longitude='" + lon + "'");
         Cursor c = db.rawQuery("SELECT * FROM favourites where latitude='" + lat + "' and longitude='" + lon + "' ", null);

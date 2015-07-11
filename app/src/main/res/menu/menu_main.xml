@@ -4,6 +4,8 @@
         android:orderInCategory="100" android:showAsAction="never" />
     <item android:id="@+id/select_range" android:title="Select Range"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/setBaseLocation" android:title="Set Base Location"
+        android:orderInCategory="100" android:showAsAction="never" />
     <!--<item android:id="@+id/restore_db" android:title="Restore DB"-->
         <!--android:orderInCategory="100" android:showAsAction="never" />-->
 </menu>

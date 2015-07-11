@@ -4,4 +4,11 @@
     <string name="title_activity_fav_activity">Favourites</string>
     <string name="API_KEY">1234567</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_base_loc__map">Base Location</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="noboringactionbar_title">Beautiful picture</string>
+    <string name="loreum">Quam ob rem vita qu;  uam ad iuvare
+        esse quicquid extra urbis po.</string>
 </resources>
