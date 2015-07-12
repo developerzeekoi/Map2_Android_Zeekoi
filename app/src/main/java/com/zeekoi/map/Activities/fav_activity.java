@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import com.daimajia.swipe.util.Attributes;
+import com.kogitune.activity_transition.ActivityTransition;
 import com.zeekoi.map.Adapters.RecyclerViewAdapter;
 import com.zeekoi.map.Managers.DBController;
 import com.zeekoi.map.Managers.DividerItemDecoration;

@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
@@ -50,6 +51,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
+import com.kogitune.activity_transition.ActivityTransitionLauncher;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -148,13 +150,8 @@ public class MapsActivity extends AppCompatActivity {
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_window_info, null);
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
         this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-//        this.phoneSnippet = (TextView) infoWindow.findViewById(R.id.phone_snippet);
         this.imginfowindow = (ImageButton) infoWindow.findViewById(R.id.imageButton);
-//        this.infoButton = (Button) infoWindow.findViewById(R.id.button);
-//        this.infoButton.setBackgroundResource(R.drawable.star_disabled);
         callButton = (Button) infoWindow.findViewById(R.id.call_but);
-//        callButton.setBackgroundResource(R.drawable.callimage);
-
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         session = new SessionManager(getApplicationContext());
@@ -230,63 +227,97 @@ public class MapsActivity extends AppCompatActivity {
             @Override
             public boolean onMarkerClick(final Marker marker) {
 
-                Routing routing = new Routing(Routing.TravelMode.WALKING);
-                routing.registerListener(new RoutingListener() {
-                    @Override
-                    public void onRoutingFailure() {
-                        Toast.makeText(getApplicationContext(), "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onRoutingStart() {
+                if (session.getButtonFlag().equals("1")) { //base location --online
 
-                    }
+                    Routing routing_BaseLoc = new Routing(Routing.TravelMode.DRIVING);
+                    routing_BaseLoc.registerListener(new RoutingListener() {
+                        @Override
+                        public void onRoutingFailure() {
+                            mToast.setText("Something went wrong [Internet not found], Try again");
+                            mToast.show();
+                        }
 
-                    @Override
-                    public void onRoutingSuccess(PolylineOptions mPolyOptions, Route route) {
-                        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
-                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+                        @Override
+                        public void onRoutingStart() {
 
-                        mMap.moveCamera(center);
-                        if (polyline != null)
-                            polyline.remove();
+                        }
 
-                        polyline = null;
-                        //adds route to the map.
-                        PolylineOptions polyOptions = new PolylineOptions();
-                        polyOptions.color(getResources().getColor(android.R.color.holo_purple));
-                        polyOptions.width(12);
-                        polyOptions.addAll(mPolyOptions.getPoints());
-                        polyline = mMap.addPolyline(polyOptions);
+                        @Override
+                        public void onRoutingSuccess(PolylineOptions mPolyOptions, Route route) {
+                            if (polyline != null)
+                                polyline.remove();
 
-                        // Start marker
+                            polyline = null;
+                            //adds route to the map.
+                            PolylineOptions polyOptions = new PolylineOptions();
+                            polyOptions.color(getResources().getColor(android.R.color.holo_purple));
+                            polyOptions.width(12);
+                            polyOptions.addAll(mPolyOptions.getPoints());
+                            polyline = mMap.addPolyline(polyOptions);
+                        }
+                    });
+
+                    routing_BaseLoc.execute(new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
+                            Double.longBitsToDouble(session.getLongitudeBaseLoc())), new LatLng(marker.getPosition().latitude,
+                            marker.getPosition().longitude));
+
+                } else { //my location routing --online
+
+                    Routing routing = new Routing(Routing.TravelMode.DRIVING);
+                    routing.registerListener(new RoutingListener() {
+                        @Override
+                        public void onRoutingFailure() {
+                            mToast.setText("Something went wrong, Try again");
+                            mToast.show();
+                        }
+
+                        @Override
+                        public void onRoutingStart() {
+
+                        }
+
+                        @Override
+                        public void onRoutingSuccess(PolylineOptions mPolyOptions, Route route) {
+//                        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+//                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+//
+//                        mMap.moveCamera(center);
+                            if (polyline != null)
+                                polyline.remove();
+
+                            polyline = null;
+                            //adds route to the map.
+                            PolylineOptions polyOptions = new PolylineOptions();
+                            polyOptions.color(getResources().getColor(android.R.color.holo_purple));
+                            polyOptions.width(12);
+                            polyOptions.addAll(mPolyOptions.getPoints());
+                            polyline = mMap.addPolyline(polyOptions);
+
+                            // Start marker
 //                        MarkerOptions options = new MarkerOptions();
 //                        options.position(new LatLng(latitude, longitude));
 //                        options.title("My Position");
 //                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 //                        mMap.addMarker(options);
 
-                        // End marker
+                            // End marker
 //                        options = new MarkerOptions();
 //                        options.position(new LatLng(marker.getPosition().latitude,marker.getPosition().longitude));
 //                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
 //                        mMap.addMarker(options);
 
 
-                    }
-                });
-                routing.execute(new LatLng(latitude, longitude), new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+                        }
+                    });
+                    routing.execute(new LatLng(latitude, longitude), new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+
+                }
+
+
                 return false;
             }
         });
-//infoWindow.setOnClickListener(new View.OnClickListener() {
-//    @Override
-//    public void onClick(View v) {
-//        System.out.println("info window clicked "+v.getId());
-//        Intent io = new Intent(getApplicationContext(),StoreInfoActivity.class);
-//                    startActivity(io);
-//    }
-//});
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
@@ -316,18 +347,6 @@ public class MapsActivity extends AppCompatActivity {
                 } catch (NullPointerException rr) {
                     rr.printStackTrace();
                 }
-//                try {
-//                    SQLiteDatabase db = controller.getWritableDatabase();
-//                    String flag = controller.checkDB(marker.getPosition().latitude, marker.getPosition().longitude);
-//                    if (flag == "full") {
-//                        infoButton.setBackgroundResource(R.drawable.star_enabled);
-//                    } else {
-//                        infoButton.setBackgroundResource(R.drawable.star_disabled);
-//                    }
-//                } catch (SQLException e) {
-//                    Toast.makeText(getApplicationContext(), String.valueOf(e), Toast.LENGTH_SHORT).show();
-//                    e.printStackTrace();
-//                }
                 return null;
             }
 
@@ -336,8 +355,6 @@ public class MapsActivity extends AppCompatActivity {
                 // Setting up the infoWindow with current's marker info
 //                infoWindow.setVisibility(View.VISIBLE);
                 try {
-
-
                     infoTitle.setText(marker.getTitle());
                     infoTitle.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
                     infoSnippet.setText(marker.getSnippet());
@@ -362,20 +379,7 @@ public class MapsActivity extends AppCompatActivity {
                         imginfowindow.setVisibility(View.VISIBLE);
 
                     }
-//                infoButton.setVisibility(View.VISIBLE);
-//                callButton.setVisibility(View.VISIBLE);
-//                imginfowindow.setVisibility(View.VISIBLE);
-//               / System.out.println("title bas loc "+markerBaseLoc.getTitle());
 
-//                        if(markerBaseLoc.getTitle().equals("Base Location")){
-//                            System.out.println("title bas loc loop " + markerBaseLoc.getTitle());
-//                            infoButton.setVisibility(View.INVISIBLE);
-//                            callButton.setVisibility(View.INVISIBLE);
-//                            imginfowindow.setVisibility(View.INVISIBLE);
-//
-//                        }
-
-//                infoButtonListener.setMarker(marker);
                     callButtonListener.setMarker(marker);
                     // We must call this to set the current marker and infoWindow references
                     // to the MapWrapperLayout
@@ -400,11 +404,12 @@ public class MapsActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        progressBar.setVisibility(View.VISIBLE);
+
         super.onResume();
         if (session.getActivitySwitchFlag() != null) {
 
             if (session.getActivitySwitchFlag().equals("1")) {
+                progressBar.setVisibility(View.VISIBLE);
                 mMap.clear();
                 markersList.clear();
                 session.setButtonFlag("1");
@@ -418,6 +423,7 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     public void showSettingsAlert(String provider) {
+
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
         alertDialog.setTitle(provider + " SETTINGS");
         alertDialog.setMessage(provider + " is not enabled! Want to go to settings menu?");
@@ -488,13 +494,10 @@ public class MapsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Range Saved..!" + session.getRange(), Toast.LENGTH_SHORT).show();
                     mMap.clear();
                     progressBar.setVisibility(View.VISIBLE);
+                    // recall json parsor for refreshing with current range
                     fetchMapDataApi(Double.longBitsToDouble(session.getLastLocLatitude()),
                             Double.longBitsToDouble(session.getLastLocLongitude()), session.getRange());
 
-//                    Intent intent = getIntent();
-//                    finish();
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                    startActivity(intent);
                 }
             });
             dialog.show();
@@ -503,7 +506,6 @@ public class MapsActivity extends AppCompatActivity {
         if (id == R.id.setBaseLocation) {
             Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
             startActivity(BaseLocIntent);
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -553,7 +555,9 @@ public class MapsActivity extends AppCompatActivity {
                     MarkersDB.put("snippet", phone);
                     MarkersDB.put("image_url", jobject.get("image").getAsString());
                     controller.insertMarkers(MarkersDB);
-                }
+                } // for loop end --json parsing
+
+                // marker for setting Bound --camera zoom
                 Marker mymarker = mMap.addMarker(new MarkerOptions()
                         .title("My Position")
                         .icon(BitmapDescriptorFactory
@@ -561,6 +565,8 @@ public class MapsActivity extends AppCompatActivity {
                         .position(new LatLng(latitude, longitude)));
                 markersList.add(mymarker);
                 mymarker.remove();
+
+                // for drawing circle around current positon with particular distance --range uncomment it
 //                if(session.getButtonFlag().equals("1")){
 //
 //                    Circle circle = mMap.addCircle(new CircleOptions()
@@ -571,9 +577,10 @@ public class MapsActivity extends AppCompatActivity {
 //                            .strokeWidth(2));
 //                }
 
+                //its executes when press base location button --baselocation button already enabled
                 if (markersList.size() == 0 || session.getButtonFlag().equals("1")) {
 
-                    mToast.setText(markersList.size() + " Stores found");
+                    mToast.setText(markersList.size() - 1 + " Stores found");
                     mToast.show();
 
                     markerBaseLoc = mMap.addMarker(new MarkerOptions()
@@ -598,6 +605,7 @@ public class MapsActivity extends AppCompatActivity {
 
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
                     mMap.animateCamera(cameraUpdate);
+                    progressBar.setVisibility(View.INVISIBLE);
 
                 } else {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
@@ -608,140 +616,88 @@ public class MapsActivity extends AppCompatActivity {
                     //Change the padding as per needed
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
-                //Calculate the markers to get their position
-                YoYo.with(Techniques.FadeOut).duration(500).delay(100).playOn(progressBar);
-
-
+                // view button click event --ViewButton --misplaced view button to call button
                 callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
                     @Override
                     protected void onClickConfirmed(View v, Marker marker) {
 
-                        YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
-
-
-//                        if(marker.getSnippet().toString().equals("")){
-//                            mToast.setText("Phone Number not available...");
-//                            mToast.show();
-//                        }else {
-//                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-//                            callIntent.setData(Uri.parse("tel:" + marker.getSnippet().toString()));
-//                            startActivity(callIntent);
-//                        }
-                        if (marker.getTitle().equals("Base Location")) {
+                        if (marker.getTitle().equals("Base Location")) { // disabling activity loading --baselocation marker
                             System.out.println("no activity for base location");
                         } else {
-
                             Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
-                            io.putExtra("markerID", marker.getId());
                             session.setTemplat(marker.getPosition().latitude);
                             session.setTempLong(marker.getPosition().longitude);
+                            io.putExtra("markerID", marker.getId());
+//                            ActivityTransitionLauncher.with(MapsActivity.this).from(v).launch(io);
                             startActivity(io);
                         }
-
                     }
                 };
                 callButton.setOnTouchListener(callButtonListener);
-
-//                infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-//                        getResources().getDrawable(R.drawable.star_disabled),
-//                        getResources().getDrawable(R.drawable.star_enabled), getApplicationContext()) {
-//
-//                    @Override
-//                    protected void onClickConfirmed(View v, Marker marker) {
-//                        // Here we can perform some action triggered after clicking the button
-//                        String markerid = marker.getId();
-//                        for (int j = 0; j < Integer.parseInt(session.getMarkerCount()); j++) {
-//                            String concateID = "m" + j;
-//                            if (markerid.equals(concateID)) {
-//                                try {
-//                                    SQLiteDatabase db = controller.getWritableDatabase();
-//                                    String flag = controller.checkDB(marker.getPosition().latitude, marker.getPosition().longitude);
-//                                    if (flag == "full") {
-//                                        mToast.setText("Removed from Favourites..");
-//                                        mToast.show();
-//                                        synchronized (db) {
-//                                            db.execSQL("DELETE from favourites WHERE " +
-//                                                    "latitude='" + marker.getPosition().latitude + "" +
-//                                                    "' and longitude='" + marker.getPosition().longitude + "' and" +
-//                                                    " phone = '" + marker.getSnippet().toString() + "'");
-//                                        }
-//                                        v.setBackgroundResource(R.drawable.star_disabled);
-//                                        marker.hideInfoWindow();
-//                                        marker.showInfoWindow();
-//                                        break;
-//                                    } else {
-//                                        mToast.setText("Added to Favourites..");
-//                                        mToast.show();
-//                                        synchronized (db) {
-//                                            db.execSQL("INSERT INTO favourites(name,phone,latitude,longitude) VALUES" +
-//                                                    "('" + marker.getTitle() + "','" + marker.getSnippet() + "'," +
-//                                                    "'" + marker.getPosition().latitude + "','" + marker.getPosition().longitude + "')");
-//                                        }
-//                                        v.setBackgroundResource(R.drawable.star_enabled);
-//                                        marker.hideInfoWindow();
-//                                        marker.showInfoWindow();
-//                                        break;
-//                                    }
-//
-//                                } catch (SQLException e) {
-//                                    Toast.makeText(getApplicationContext(), String.valueOf(e), Toast.LENGTH_SHORT).show();
-//                                    e.printStackTrace();
-//                                }
-//                                break;
-//                            }
-//                        }
-//                    }
-//                };
-//                infoButton.setOnTouchListener(infoButtonListener);
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(int statusCode, Throwable error, String content) {
 
-                Toast.makeText(getApplicationContext(), "Device might not be connected to Internet", Toast.LENGTH_LONG).show();
 
-                //load map from cache and shows locations from saved datas
-                String Json_Session = session.getResponse();
-                JsonElement jelement = new JsonParser().parse(Json_Session);
-                JsonObject jobject = jelement.getAsJsonObject();
-                JsonArray jarray = jobject.getAsJsonArray("data");
-                session.setMarkerCount(String.valueOf(jarray.size()));
+if(session.getResponse() == null){
+    Toast.makeText(getApplicationContext(), "Device might not be connected to Internet", Toast.LENGTH_LONG).show();
+}else {
+    //load map from cache and shows locations from saved datas
+    String Json_Session = session.getResponse();
+    JsonElement jelement = new JsonParser().parse(Json_Session);
+    JsonObject jobject = jelement.getAsJsonObject();
+    JsonArray jarray = jobject.getAsJsonArray("data");
+    session.setMarkerCount(String.valueOf(jarray.size()));
+    MarkersDB = new HashMap<String, String>();
+    markersList = new ArrayList<Marker>();
+    for (int i = 0; i < jarray.size(); i++) {
+        jobject = jarray.get(i).getAsJsonObject();
+        storeid = jobject.get("storeid").getAsString();
+        String name = jobject.get("name").getAsString().toUpperCase();
+        String address = jobject.get("address").getAsString();
+        String phone = jobject.get("phone").getAsString();
+        String nameAddress = "<b>" + name + "</b><br><br>" + address;
+        latJSON = jobject.get("lat").getAsDouble();
+        longJSON = jobject.get("long").getAsDouble();
+        Spanned spannedContent = Html.fromHtml(nameAddress);
+        Marker markerobj = mMap.addMarker(new MarkerOptions()
+                .title(spannedContent.toString())
+                .snippet(phone)
+                .position(new LatLng(latJSON, longJSON)));
+        markersList.add(markerobj);
+        MarkersDB.put("marker_id", markerobj.getId());
+        MarkersDB.put("title", nameAddress);
+        MarkersDB.put("snippet", phone);
+        MarkersDB.put("image_url", jobject.get("image").getAsString());
+        controller.insertMarkers(MarkersDB);
+    }
+    Marker mymarker = mMap.addMarker(new MarkerOptions()
+            .title("My Position")
+            .icon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+            .position(new LatLng(latitude, longitude)));
+    markersList.add(mymarker);
+    mymarker.remove();
 
-                markersList = new ArrayList<Marker>();
-                for (int i = 0; i < jarray.size(); i++) {
-                    jobject = jarray.get(i).getAsJsonObject();
-                    storeid = jobject.get("storeid").getAsString();
-                    String name = jobject.get("name").getAsString().toUpperCase();
-                    String address = jobject.get("address").getAsString();
-                    String phone = jobject.get("phone").getAsString();
-                    String nameAddress = "<b>" + name + "</b><br><br>" + address;
-                    latJSON = jobject.get("lat").getAsDouble();
-                    longJSON = jobject.get("long").getAsDouble();
-                    Spanned spannedContent = Html.fromHtml(nameAddress);
-                    Marker markerobj = mMap.addMarker(new MarkerOptions()
-                            .title(spannedContent.toString())
-                            .snippet(phone)
-                            .position(new LatLng(latJSON, longJSON)));
-                    markersList.add(markerobj);
-                }
 
+    if (markersList.size() == 0 || session.getButtonFlag().equals("1")) {
+        mToast.setText(markersList.size() - 1 + " Stores found");
+        mToast.show();
+        markerBaseLoc = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
+                        Double.longBitsToDouble(session.getLongitudeBaseLoc())))
 
-                if (markersList.size() == 0 || session.getButtonFlag().equals("1")) {
-                    mToast.setText(markersList.size() + " Stores found");
-                    mToast.show();
-                    markerBaseLoc = mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
-                                    Double.longBitsToDouble(session.getLongitudeBaseLoc())))
-
-                            .icon(BitmapDescriptorFactory
-                                    .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .title("Base Location"));
-                    markerBaseLoc.hideInfoWindow();
-                    LatLng latLng = new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc())
-                            , Double.longBitsToDouble(session.getLongitudeBaseLoc()));
-
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .title("Base Location"));
+        markerBaseLoc.hideInfoWindow();
+        LatLng latLng = new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc())
+                , Double.longBitsToDouble(session.getLongitudeBaseLoc()));
+        //uncomment it if u want draw circle arround marker
 //                    Circle circle = mMap.addCircle(new CircleOptions()
 //                            .center(new LatLng(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
 //                                    Double.longBitsToDouble(session.getLongitudeBaseLoc())))
@@ -749,94 +705,39 @@ public class MapsActivity extends AppCompatActivity {
 //                            .strokeColor(Color.BLUE)
 //                            .strokeWidth(2));
 
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 7);
-                    mMap.animateCamera(cameraUpdate);
-                    YoYo.with(Techniques.FadeOut).duration(500).delay(100).playOn(progressBar);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 7);
+        mMap.animateCamera(cameraUpdate);
+        YoYo.with(Techniques.FadeOut).duration(500).delay(100).playOn(progressBar);
 
-                } else {
-                    LatLngBounds.Builder b = new LatLngBounds.Builder();
-                    for (Marker m : markersList) {
-                        b.include(m.getPosition());
-                    }
-                    LatLngBounds bounds = b.build();
-                    //Change the padding as per needed
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
-                }
-                //Calculate the markers to get their position
+    } else {
+        LatLngBounds.Builder b = new LatLngBounds.Builder();
+        for (Marker m : markersList) {
+            b.include(m.getPosition());
+        }
+        LatLngBounds bounds = b.build();
+        //Change the padding as per needed
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
+    }
+    //ViewButton on info window --misnamed button
+    callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
+        @Override
+        protected void onClickConfirmed(View v, Marker marker) {
+            if (marker.getTitle().equals("Base Location")) { //disable activity luanch --base location
+                System.out.println("no activity for base location");
+            } else {
 
-                callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
-                    @Override
-                    protected void onClickConfirmed(View v, Marker marker) {
-                        System.out.println("resonse=" + session.getResponse());
-                        YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(infoWindow.findViewById(R.id.call_but));
+                Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+                io.putExtra("markerID", marker.getId());
+                session.setTemplat(marker.getPosition().latitude);
+                session.setTempLong(marker.getPosition().longitude);
+                startActivity(io);
+            }
+        }
+    };
+    callButton.setOnTouchListener(callButtonListener);
 
-
-                        if (marker.getTitle().equals("Base Location")) {
-                            System.out.println("no activity for base location");
-                        } else {
-
-                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
-                            io.putExtra("markerID", marker.getId());
-                            session.setTemplat(marker.getPosition().latitude);
-                            session.setTempLong(marker.getPosition().longitude);
-                            startActivity(io);
-                        }
-                    }
-                };
-                callButton.setOnTouchListener(callButtonListener);
-//
-//                infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-//                        getResources().getDrawable(R.drawable.star_disabled),
-//                        getResources().getDrawable(R.drawable.star_enabled), getApplicationContext()) {
-//
-//                    @Override
-//                    protected void onClickConfirmed(View v, Marker marker) {
-//                        // Here we can perform some action triggered after clicking the button
-//                        String markerid = marker.getId();
-//                        for (int j = 0; j < Integer.parseInt(session.getMarkerCount()); j++) {
-//                            String concateID = "m" + j;
-//                            if (markerid.equals(concateID)) {
-//                                try {
-//                                    SQLiteDatabase db = controller.getWritableDatabase();
-//                                    String flag = controller.checkDB(marker.getPosition().latitude, marker.getPosition().longitude);
-//                                    if (flag == "full") {
-//                                        mToast.setText("Removed from Favourites..");
-//                                        mToast.show();
-//                                        synchronized (db) {
-//                                            db.execSQL("DELETE from favourites WHERE " +
-//                                                    "latitude='" + marker.getPosition().latitude + "" +
-//                                                    "' and longitude='" + marker.getPosition().longitude + "' and " +
-//                                                    "phone = '" + marker.getSnippet().toString() + "'");
-//                                        }
-//                                        v.setBackgroundResource(R.drawable.star_disabled);
-//                                        marker.hideInfoWindow();
-//                                        marker.showInfoWindow();
-//                                        break;
-//                                    } else {
-//                                        mToast.setText("Added to Favourites..");
-//                                        mToast.show();
-//                                        synchronized (db) {
-//                                            db.execSQL("INSERT INTO favourites(name,phone,latitude,longitude) VALUES" +
-//                                                    "('" + marker.getTitle() + "','" + marker.getSnippet() + "'," +
-//                                                    "'" + marker.getPosition().latitude + "','" + marker.getPosition().longitude + "')");
-//                                        }
-//                                        v.setBackgroundResource(R.drawable.star_enabled);
-//                                        marker.hideInfoWindow();
-//                                        marker.showInfoWindow();
-//                                        break;
-//                                    }
-//
-//                                } catch (SQLException e) {
-//                                    Toast.makeText(getApplicationContext(), String.valueOf(e), Toast.LENGTH_SHORT).show();
-//                                    e.printStackTrace();
-//                                }
-//                                break;
-//                            }
-//                        }
-//                    }
-//                };
-//                infoButton.setOnTouchListener(infoButtonListener);
-                progressBar.setVisibility(View.INVISIBLE);
+    progressBar.setVisibility(View.INVISIBLE);
+}
             } //onFailure ends
         });
     }

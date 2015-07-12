@@ -16,7 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-sdk tools:overrideLibrary="com.jpardogo.android.googleprogressbar.library , com.vstechlab.testeasyfont.easyfonts , com.yalantis.contextmenu.lib" />
+    <uses-sdk tools:overrideLibrary="com.jpardogo.android.googleprogressbar.library ,
+    com.vstechlab.testeasyfont.easyfonts ,
+    com.yalantis.contextmenu.lib ,
+    com.kogitune.activity_transition" />
 
 
     <application

@@ -42,6 +42,7 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
     private Toast mToast;
     private Circle circle;
     boolean rangeFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,18 +132,18 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
             });
             dialog.show();
         }
-       if(id == android.R.id.home){
-           session.setActivitySwitchFlag("1");
-           onBackPressed();
-       }
+        if (id == android.R.id.home) {
+            session.setActivitySwitchFlag("1");
+            onBackPressed();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-    public  void initialize(){
+    public void initialize() {
 
-        if(!session.getLatitudeBaseLoc().equals(null) && !session.getLongitudeBaseLoc().equals(null)) {
+        if (!session.getLatitudeBaseLoc().equals(null) && !session.getLongitudeBaseLoc().equals(null)) {
             double latitude = Double.longBitsToDouble(session.getLatitudeBaseLoc());
             double longitude = Double.longBitsToDouble(session.getLongitudeBaseLoc());
             marker = mMap.addMarker(new MarkerOptions()
@@ -160,7 +161,7 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
 //                    .strokeWidth(2));
 
 
-            LatLng latLng = new LatLng(latitude,longitude);
+            LatLng latLng = new LatLng(latitude, longitude);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
             mMap.animateCamera(cameraUpdate);
         }
@@ -175,7 +176,7 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if(marker!=null){
+                if (marker != null) {
                     marker.remove();
 //                    circle.remove();
                 }
@@ -202,14 +203,14 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
 
                 double latitude = Double.longBitsToDouble(session.getLatitudeBaseLoc());
                 double longitude = Double.longBitsToDouble(session.getLongitudeBaseLoc());
-                System.out.println("from session "+ latitude +" "+ longitude);
+                System.out.println("from session " + latitude + " " + longitude);
                 System.out.println(latLng.latitude + "---" + latLng.longitude);
             }
         });
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-                System.out.println("start drag "+marker.getPosition().latitude+" "+marker.getPosition().longitude);
+                System.out.println("start drag " + marker.getPosition().latitude + " " + marker.getPosition().longitude);
             }
 
             @Override
@@ -237,7 +238,7 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch(keyCode){
+        switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 session.setActivitySwitchFlag("1");
                 onBackPressed();
