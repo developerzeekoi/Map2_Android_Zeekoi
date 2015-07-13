@@ -19,7 +19,8 @@
     <uses-sdk tools:overrideLibrary="com.jpardogo.android.googleprogressbar.library ,
     com.vstechlab.testeasyfont.easyfonts ,
     com.yalantis.contextmenu.lib ,
-    com.kogitune.activity_transition" />
+    com.kogitune.activity_transition,
+    com.github.clans.fab"/>
 
 
     <application

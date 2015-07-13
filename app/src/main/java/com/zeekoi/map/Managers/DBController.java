@@ -34,7 +34,7 @@ public class DBController extends SQLiteOpenHelper {
         String query, query_marker;
         query = "CREATE TABLE favourites ( _id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, phone TEXT, latitude TEXT, longitude TEXT)";
         database.execSQL(query);
-        query_marker = "CREATE TABLE markers ( _id INTEGER PRIMARY KEY AUTOINCREMENT, marker_id TEXT, title TEXT, snippet TEXT, image_url TEXT)";
+        query_marker = "CREATE TABLE markers ( _id INTEGER PRIMARY KEY AUTOINCREMENT, marker_id TEXT, title TEXT, snippet TEXT, phone TEXT ,image_url TEXT)";
         database.execSQL(query_marker);
 //        for (int i=0;i<25;i++){
 //            database.execSQL("INSERT INTO favourites(name,phone,latitude,longitude) VALUES ('"+i+"asd','98745"+i+"','1234"+i+"','9874')");
@@ -62,6 +62,7 @@ public class DBController extends SQLiteOpenHelper {
         values.put("marker_id", queryValues.get("marker_id"));
         values.put("title", queryValues.get("title"));
         values.put("snippet", queryValues.get("snippet"));
+        values.put("phone", queryValues.get("phone"));
         values.put("image_url", queryValues.get("image_url"));
 
         database.insert("markers", null, values);

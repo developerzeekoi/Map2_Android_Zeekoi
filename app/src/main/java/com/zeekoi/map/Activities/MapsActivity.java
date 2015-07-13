@@ -150,7 +150,6 @@ public class MapsActivity extends AppCompatActivity {
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_window_info, null);
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
         this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-        this.imginfowindow = (ImageButton) infoWindow.findViewById(R.id.imageButton);
         callButton = (Button) infoWindow.findViewById(R.id.call_but);
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -328,20 +327,16 @@ public class MapsActivity extends AppCompatActivity {
                     if (marker.getTitle().equals("My Position")) {
                         System.out.println("no activity for base location");
                         callButton.setVisibility(View.INVISIBLE);
-                        imginfowindow.setVisibility(View.INVISIBLE);
 
                     } else {
                         callButton.setVisibility(View.VISIBLE);
-                        imginfowindow.setVisibility(View.VISIBLE);
 
                     }
                     if (marker.getTitle().equals("Base Location")) {
                         System.out.println("no activity for base location");
                         callButton.setVisibility(View.INVISIBLE);
-                        imginfowindow.setVisibility(View.INVISIBLE);
                     } else {
                         callButton.setVisibility(View.VISIBLE);
-                        imginfowindow.setVisibility(View.VISIBLE);
 
                     }
                 } catch (NullPointerException rr) {
@@ -354,29 +349,26 @@ public class MapsActivity extends AppCompatActivity {
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
 //                infoWindow.setVisibility(View.VISIBLE);
+
                 try {
                     infoTitle.setText(marker.getTitle());
-                    infoTitle.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
+                    infoTitle.setTypeface(EasyFonts.robotoBold(getApplicationContext()));
                     infoSnippet.setText(marker.getSnippet());
                     infoSnippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
                     markerTemp = marker;
                     if (marker.getTitle().equals("My Position")) {
                         System.out.println("no activity for base location");
                         callButton.setVisibility(View.INVISIBLE);
-                        imginfowindow.setVisibility(View.INVISIBLE);
 
                     } else {
                         callButton.setVisibility(View.VISIBLE);
-                        imginfowindow.setVisibility(View.VISIBLE);
 
                     }
                     if (marker.getTitle().equals("Base Location")) {
                         System.out.println("no activity for base location");
                         callButton.setVisibility(View.INVISIBLE);
-                        imginfowindow.setVisibility(View.INVISIBLE);
                     } else {
                         callButton.setVisibility(View.VISIBLE);
-                        imginfowindow.setVisibility(View.VISIBLE);
 
                     }
 
@@ -538,21 +530,22 @@ public class MapsActivity extends AppCompatActivity {
                 for (int i = 0; i < jarray.size(); i++) {
                     jobject = jarray.get(i).getAsJsonObject();
                     storeid = jobject.get("storeid").getAsString();
-                    String name = jobject.get("name").getAsString().toUpperCase();
+                    String name = jobject.get("name").getAsString();
                     String address = jobject.get("address").getAsString();
                     String phone = jobject.get("phone").getAsString();
-                    String nameAddress = "<strong>" + name + "</strong><br><br>" + address;
+                    String phoneAddress = "<strong>" + address + "</strong><br>Ph. " + phone;
                     latJSON = jobject.get("lat").getAsDouble();
                     longJSON = jobject.get("long").getAsDouble();
-                    Spanned spannedContent = Html.fromHtml(nameAddress);
+//                    Spanned spannedContent = Html.fromHtml(nameAddress);
                     Marker markerobj = mMap.addMarker(new MarkerOptions()
-                            .title(String.valueOf(Html.fromHtml(nameAddress)))
-                            .snippet(phone)
+                            .title(String.valueOf(Html.fromHtml(name)))
+                            .snippet(String.valueOf(Html.fromHtml(phoneAddress)))
                             .position(new LatLng(latJSON, longJSON)));
                     markersList.add(markerobj);
                     MarkersDB.put("marker_id", markerobj.getId());
-                    MarkersDB.put("title", nameAddress);
-                    MarkersDB.put("snippet", phone);
+                    MarkersDB.put("title", name);
+                    MarkersDB.put("snippet", address);
+                    MarkersDB.put("phone" ,phone);
                     MarkersDB.put("image_url", jobject.get("image").getAsString());
                     controller.insertMarkers(MarkersDB);
                 } // for loop end --json parsing
@@ -670,8 +663,9 @@ if(session.getResponse() == null){
                 .position(new LatLng(latJSON, longJSON)));
         markersList.add(markerobj);
         MarkersDB.put("marker_id", markerobj.getId());
-        MarkersDB.put("title", nameAddress);
-        MarkersDB.put("snippet", phone);
+        MarkersDB.put("title", name);
+        MarkersDB.put("snippet", address);
+        MarkersDB.put("phone" ,phone);
         MarkersDB.put("image_url", jobject.get("image").getAsString());
         controller.insertMarkers(MarkersDB);
     }

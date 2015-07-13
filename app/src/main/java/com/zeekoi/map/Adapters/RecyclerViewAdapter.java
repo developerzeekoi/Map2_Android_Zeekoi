@@ -45,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             nameAddress = (TextView) itemView.findViewById(R.id.name);
-            phone = (TextView) itemView.findViewById(R.id.phone);
+            phone = (TextView) itemView.findViewById(R.id.phone_storeinfo);
             buttonDelete = (Button) itemView.findViewById(R.id.delete);
             callView = (ImageView) itemView.findViewById(R.id.callImg);
             idForDelete = (TextView) itemView.findViewById(R.id.idTemp);

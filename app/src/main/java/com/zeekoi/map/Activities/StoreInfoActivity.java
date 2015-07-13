@@ -48,7 +48,7 @@ public class StoreInfoActivity extends AppCompatActivity {
     private SessionManager session;
     private String markerTitle;
     private String markerSnippet;
-    private String imageURL;
+    private String imageURL, phone;
     private ImageView call;
     private Bitmap bitmap;
     private Toast mToast;
@@ -85,8 +85,9 @@ public class StoreInfoActivity extends AppCompatActivity {
             while (c.moveToNext()) {
                 markerTitle = c.getString(2);
                 markerSnippet = c.getString(3);
-                imageURL = c.getString(4);
-                System.out.println(c.getString(4));
+                phone = c.getString(4);
+                imageURL = c.getString(5);
+                System.out.println(c.getString(5));
                 System.out.println(c);
             }
         } catch (NullPointerException r) {
@@ -95,12 +96,16 @@ public class StoreInfoActivity extends AppCompatActivity {
 
         fav = (ImageView) findViewById(R.id.fav);
         call = (ImageView) findViewById(R.id.call);
-        progressBar = (GoogleProgressBar) findViewById(R.id.progressBar);
+        progressBar = (GoogleProgressBar) findViewById(R.id.progressBarStore);
+        progressBar.setVisibility(View.VISIBLE);
         TextView title = (TextView) findViewById(R.id.markerTitle);
         title.setText(String.valueOf(Html.fromHtml(markerTitle)));
         title.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
         TextView snippet = (TextView) findViewById(R.id.markerSnippet);
-        snippet.setText("Tel. No. :  "+markerSnippet);
+        TextView phoneDB = (TextView) findViewById(R.id.phone_storeinfo);
+        snippet.setText(markerSnippet);
+        phoneDB.setText("Tel. No. :  "+phone);
+        System.out.println("phoone "+phone);
         snippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
         new LoadImage().execute(imageURL);
 
@@ -165,7 +170,7 @@ public class StoreInfoActivity extends AppCompatActivity {
                 mToast.setText("calling...");
                 mToast.show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + markerSnippet));
+                callIntent.setData(Uri.parse("tel:" + phone));
                 startActivity(callIntent);
             }
         });
@@ -213,7 +218,7 @@ public class StoreInfoActivity extends AppCompatActivity {
                 ImageView header_picture = (ImageView) findViewById(R.id.headerImage);
                 header_picture.setImageBitmap(image);
             } else {
-                progressBar.setVisibility(View.INVISIBLE);
+//                progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(StoreInfoActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
             }
         }

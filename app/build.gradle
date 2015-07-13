@@ -36,6 +36,7 @@ dependencies {
     compile 'com.vstechlab.easyfonts:easyfonts:1.0.0'
     compile 'com.github.jd-alexander:library:1.0.1'
     compile 'com.kogitune:pre-lollipop-activity-transition:1.0.0'
+    compile 'com.github.clans:fab:1.5.4'
 
 
     compile 'com.nineoldandroids:library:2.4.0'

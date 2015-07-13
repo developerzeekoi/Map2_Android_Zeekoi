@@ -71,7 +71,7 @@
             android:id="@+id/callImg"
             android:layout_width="50dp"
             android:layout_height="43dp"
-            android:layout_alignBottom="@+id/phone"
+            android:layout_alignBottom="@+id/phone_storeinfo"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
@@ -79,7 +79,7 @@
             android:src="@drawable/callimage" />
 
         <TextView
-            android:id="@+id/phone"
+            android:id="@+id/phone_storeinfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
