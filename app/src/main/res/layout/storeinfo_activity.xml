@@ -28,20 +28,20 @@
                     android:layout_height="250dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:src="@drawable/ny"
-                    android:minHeight="250dp" />
+                    android:minHeight="250dp"
+                    android:src="@drawable/ny" />
 
 
-                    <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
-                        android:id="@+id/progressBarStore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        gpb:type="chrome_floating_circles"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_x="174dp"
-                        android:layout_y="88dp" />
+                <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
+                    android:id="@+id/progressBarStore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_x="174dp"
+                    android:layout_y="88dp"
+                    gpb:type="chrome_floating_circles" />
 
 
             </AbsoluteLayout>
@@ -50,54 +50,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/abshj">
-<ImageView
-    android:layout_width="60dp"
-    android:layout_height="60dp"
-    android:src="@drawable/star_disabled"
-    android:layout_gravity="bottom|center_horizontal"
-    android:layout_marginLeft="35dp"
-    android:layout_marginStart="35dp"
-    android:id="@+id/fav"
-    android:layout_alignTop="@+id/call"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_marginTop="5dp" />
+
                 <ImageView
+                    android:id="@+id/fav"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/callimage"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/call"
                     android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/star_disabled" />
+
+                <ImageView
                     android:id="@+id/call"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginEnd="40dp"
                     android:layout_marginRight="40dp"
-                    android:layout_marginEnd="40dp" />
+                    android:src="@drawable/callimage" />
                 <!--<com.github.clans.fab.FloatingActionButton-->
-                    <!--android:id="@+id/fab_fav"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentLeft="true"-->
-                    <!--android:layout_alignParentStart="true"-->
-                    <!--android:layout_alignParentTop="true"-->
+                <!--android:id="@+id/fab_fav"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_alignParentTop="true"-->
 
-                    <!--android:layout_gravity="bottom|right"-->
-                    <!--android:layout_marginLeft="129dp"-->
-                    <!--android:layout_marginStart="129dp"-->
-                    <!--android:background="#ff567fc5"-->
-                    <!--android:src="@android:drawable/btn_star_big_off"-->
-                    <!--app:fab_elevationCompat="4dp" />-->
+                <!--android:layout_gravity="bottom|right"-->
+                <!--android:layout_marginLeft="129dp"-->
+                <!--android:layout_marginStart="129dp"-->
+                <!--android:background="#ff567fc5"-->
+                <!--android:src="@android:drawable/btn_star_big_off"-->
+                <!--app:fab_elevationCompat="4dp" />-->
 
                 <!--<com.github.clans.fab.FloatingActionButton-->
-                    <!--android:id="@+id/fab_call"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentTop="true"-->
-                    <!--android:layout_gravity="bottom|right"-->
-                    <!--android:layout_toEndOf="@+id/fab_fav"-->
-                    <!--android:layout_toRightOf="@+id/fab_fav"-->
-                    <!--android:src="@android:drawable/ic_menu_call"-->
-                    <!--app:fab_elevationCompat="4dp" />-->
+                <!--android:id="@+id/fab_call"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_gravity="bottom|right"-->
+                <!--android:layout_toEndOf="@+id/fab_fav"-->
+                <!--android:layout_toRightOf="@+id/fab_fav"-->
+                <!--android:src="@android:drawable/ic_menu_call"-->
+                <!--app:fab_elevationCompat="4dp" />-->
             </RelativeLayout>
 
             <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -110,50 +112,117 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="70dp"
                 card_view:cardCornerRadius="5dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/markerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/card_view"
 
-                <TextView
-                    android:id="@+id/markerTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/card_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@+id/card_view1"
+        android:layout_toStartOf="@+id/card_view1"
+        android:text="Store Name"
+        android:textColor="#ff000000"
+        android:textSize="15dp"
+        android:layout_marginLeft="20dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="25 KM away"
+        android:id="@+id/distance"
+        android:layout_alignTop="@+id/card_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
 
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginTop="15dp"
-                    android:layout_toLeftOf="@+id/card_view1"
-                    android:layout_toStartOf="@+id/card_view1"
-                    android:paddingLeft="15dp"
-                    android:text="New Text"
-                    android:textColor="#ff181d8b" />
+        android:textColor="#ff000000"
+        android:textSize="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp" />
 
-                <TextView
-                    android:id="@+id/markerSnippet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+    <TextView
+        android:id="@+id/line"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:paddingTop="5dip"
+        android:gravity="center_horizontal"
 
-                    android:layout_below="@+id/markerTitle"
-                    android:layout_marginTop="55dp"
-                    android:paddingLeft="15dp"
-                    android:text="Medium Text"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#ff181d8b" />
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6d000000"
+        android:autoText="false"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 
-                <TextView
-                    android:id="@+id/phone_storeinfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="100dp"
-                    android:paddingLeft="15dp"
-                    android:text="phone"
-                    android:textColor="#ff080318" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADDRESS"
+        android:id="@+id/textView"
+        android:textColor="#92000000"
+        android:textSize="12dp"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:id="@+id/markerSnippet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+
+        android:layout_below="@+id/markerTitle"
+        android:text="address content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ff030306"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/textView3"
+        android:paddingTop="5dip"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6d000000"
+        android:autoText="false"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PHONE"
+        android:id="@+id/textView2"
+        android:textColor="#92000000"
+        android:layout_marginTop="5dp"
+        android:textSize="12dp"
+        android:layout_marginLeft="20dp" />
+
+    <TextView
+        android:id="@+id/phone_storeinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="phone content"
+        android:textColor="#ff080318"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp" />
+
+</LinearLayout>
 
 
             </android.support.v7.widget.CardView>
+
+
 
 
         </RelativeLayout>

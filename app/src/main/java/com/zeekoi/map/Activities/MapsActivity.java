@@ -620,6 +620,7 @@ public class MapsActivity extends AppCompatActivity {
                             System.out.println("no activity for base location");
                         } else {
                             Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+//                            Intent io = new Intent(getApplicationContext(), AnimateToolbar.class);
                             session.setTemplat(marker.getPosition().latitude);
                             session.setTempLong(marker.getPosition().longitude);
                             io.putExtra("markerID", marker.getId());
@@ -650,16 +651,16 @@ if(session.getResponse() == null){
     for (int i = 0; i < jarray.size(); i++) {
         jobject = jarray.get(i).getAsJsonObject();
         storeid = jobject.get("storeid").getAsString();
-        String name = jobject.get("name").getAsString().toUpperCase();
+        String name = jobject.get("name").getAsString();
         String address = jobject.get("address").getAsString();
         String phone = jobject.get("phone").getAsString();
-        String nameAddress = "<b>" + name + "</b><br><br>" + address;
+        String phoneAddress = "<strong>" + address + "</strong><br>Ph. " + phone;
         latJSON = jobject.get("lat").getAsDouble();
         longJSON = jobject.get("long").getAsDouble();
-        Spanned spannedContent = Html.fromHtml(nameAddress);
+//        Spanned spannedContent = Html.fromHtml(phoneAddress);
         Marker markerobj = mMap.addMarker(new MarkerOptions()
-                .title(spannedContent.toString())
-                .snippet(phone)
+                .title(String.valueOf(Html.fromHtml(name)))
+                .snippet(String.valueOf(Html.fromHtml(phoneAddress)))
                 .position(new LatLng(latJSON, longJSON)));
         markersList.add(markerobj);
         MarkersDB.put("marker_id", markerobj.getId());

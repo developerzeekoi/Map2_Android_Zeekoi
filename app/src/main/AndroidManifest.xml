@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zeekoi.map" >
 
+    <uses-sdk tools:overrideLibrary="com.jpardogo.android.googleprogressbar.library , it.sephiroth.android.library.viewrevealanimator ,
+    com.vstechlab.testeasyfont.easyfonts ,     com.yalantis.contextmenu.lib ,     com.kogitune.activity_transition,     com.github.clans.fab" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -15,13 +18,6 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <uses-sdk tools:overrideLibrary="com.jpardogo.android.googleprogressbar.library ,
-    com.vstechlab.testeasyfont.easyfonts ,
-    com.yalantis.contextmenu.lib ,
-    com.kogitune.activity_transition,
-    com.github.clans.fab"/>
-
 
     <application
         android:allowBackup="true"
@@ -50,14 +46,18 @@
             android:name=".Activities.fav_activity"
             android:label="@string/title_activity_fav_activity" />
         <activity
-            android:configChanges="orientation|screenSize"
             android:name=".Activities.BaseLoc_MapActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_base_loc__map" >
         </activity>
         <activity
             android:name=".Activities.StoreInfoActivity"
-            android:label="Store"
-            />
+            android:configChanges="orientation|screenSize"
+            android:label="Store" />
+        <activity
+            android:name=".Activities.AnimateToolbar"
+            android:label="@string/title_activity_animate_toolbar" >
+        </activity>
     </application>
 
 </manifest>

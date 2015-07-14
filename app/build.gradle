@@ -38,6 +38,10 @@ dependencies {
     compile 'com.kogitune:pre-lollipop-activity-transition:1.0.0'
     compile 'com.github.clans:fab:1.5.4'
 
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:palette-v7:22.2.0'
+    compile 'it.sephiroth.android.library.viewrevealanimator:view-reveal-animator:+'
+
 
     compile 'com.nineoldandroids:library:2.4.0'
     compile files('android-async-http-1.4.4.jar')

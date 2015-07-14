@@ -3,6 +3,8 @@ package com.zeekoi.map.Activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,10 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
     private Toast mToast;
     private Circle circle;
     boolean rangeFlag = false;
+    private Location gpsLocation;
+    private Location nwLocation;
+    private double lat,lon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
         }
 
         appLocationService = new AppLocationService(BaseLoc_MapActivity.this);
+        gpsLocation = appLocationService.getLocation(LocationManager.GPS_PROVIDER);
+       nwLocation = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapBaseLoc);
         mMap = mapFragment.getMap();
         // Changing map type
@@ -143,25 +151,44 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
 
     public void initialize() {
 
-        if (!session.getLatitudeBaseLoc().equals(null) && !session.getLongitudeBaseLoc().equals(null)) {
-            double latitude = Double.longBitsToDouble(session.getLatitudeBaseLoc());
-            double longitude = Double.longBitsToDouble(session.getLongitudeBaseLoc());
+//        if (!session.getLatitudeBaseLoc().equals(null) && !session.getLongitudeBaseLoc().equals(null)) {
+//            double latitude = Double.longBitsToDouble(session.getLatitudeBaseLoc());
+//            double longitude = Double.longBitsToDouble(session.getLongitudeBaseLoc());
+//            marker = mMap.addMarker(new MarkerOptions()
+//                    .position(new LatLng(latitude, longitude))
+//                    .draggable(true)
+//                    .icon(BitmapDescriptorFactory
+//                            .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+//                    .title("Base Location")
+//                    .visible(true));
+//
+////             circle = mMap.addCircle(new CircleOptions()
+////                    .center(new LatLng(latitude, longitude))
+////                    .radius(Integer.parseInt(session.getRange()) * 1000)
+////                    .strokeColor(Color.BLUE)
+////                    .strokeWidth(2));
+//
+//
+//            LatLng latLng = new LatLng(latitude, longitude);
+//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
+//            mMap.animateCamera(cameraUpdate);
+//        }
+        if(session.getLatitudeBaseLoc() == 0.0 && session.getLongitudeBaseLoc() ==0.0){
+            if(gpsLocation!=null){
+                lat = gpsLocation.getLatitude();
+                lon = gpsLocation.getLongitude();
+            }else if(nwLocation!=null){
+                lat= nwLocation.getLatitude();
+                lon = nwLocation.getLongitude();
+            }
             marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
+                    .position(new LatLng(lat, lon))
                     .draggable(true)
                     .icon(BitmapDescriptorFactory
                             .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                     .title("Base Location")
                     .visible(true));
-
-//             circle = mMap.addCircle(new CircleOptions()
-//                    .center(new LatLng(latitude, longitude))
-//                    .radius(Integer.parseInt(session.getRange()) * 1000)
-//                    .strokeColor(Color.BLUE)
-//                    .strokeWidth(2));
-
-
-            LatLng latLng = new LatLng(latitude, longitude);
+            LatLng latLng = new LatLng(lat, lon);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
             mMap.animateCamera(cameraUpdate);
         }

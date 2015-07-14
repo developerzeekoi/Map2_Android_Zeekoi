@@ -83,6 +83,7 @@ public class StoreInfoActivity extends AppCompatActivity {
             SQLiteDatabase db = controller.getWritableDatabase();
             Cursor c = db.rawQuery("select * from markers where marker_id='" + markerID + "'", null);
             while (c.moveToNext()) {
+                System.out.println("marker title "+c.getString(2));
                 markerTitle = c.getString(2);
                 markerSnippet = c.getString(3);
                 phone = c.getString(4);
@@ -105,7 +106,8 @@ public class StoreInfoActivity extends AppCompatActivity {
         TextView phoneDB = (TextView) findViewById(R.id.phone_storeinfo);
         snippet.setText(markerSnippet);
         phoneDB.setText("Tel. No. :  "+phone);
-        System.out.println("phoone "+phone);
+        phoneDB.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
+//        System.out.println("phoone "+phone);
         snippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
         new LoadImage().execute(imageURL);
 
@@ -113,9 +115,11 @@ public class StoreInfoActivity extends AppCompatActivity {
             SQLiteDatabase db = controller.getWritableDatabase();
             String flag = controller.checkDB(latitude, longitude);
             if (flag == "full") {
-                fav.setBackgroundResource(R.drawable.star_enabled);
+                System.out.println("db full star enabled");
+                fav.setImageResource(R.drawable.star_enabled);
+
             } else {
-                fav.setBackgroundResource(R.drawable.star_disabled);
+                fav.setImageResource(R.drawable.star_disabled);
             }
         } catch (SQLException e) {
             Toast.makeText(getApplicationContext(), String.valueOf(e), Toast.LENGTH_SHORT).show();

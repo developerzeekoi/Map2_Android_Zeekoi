@@ -109,7 +109,7 @@ public class DBController extends SQLiteOpenHelper {
     public String checkDB(Double lat, Double lon) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        System.out.println("SELECT * FROM favourites where latitude='" + lat + "'and longitude='" + lon + "'");
+//        System.out.println("SELECT * FROM favourites where latitude='" + lat + "'and longitude='" + lon + "'");
         Cursor c = db.rawQuery("SELECT * FROM favourites where latitude='" + lat + "' and longitude='" + lon + "' ", null);
         String flag = "empty";
 
