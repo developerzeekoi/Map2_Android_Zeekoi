@@ -3,26 +3,23 @@ package com.zeekoi.map.Managers;
  * Created by Zeekoi Technologies Private Ltd. on 5/22/2015.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.R.string;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DBController extends SQLiteOpenHelper {
-    private SQLiteDatabase mDb;
-    private static String ID = "id";
     private static final String NAME = "name";
     private static final String ADDRESS = "address";
     private static final String PHONE = "phone";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
+    private static String ID = "id";
+    private SQLiteDatabase mDb;
 
     public DBController(Context applicationcontext) {
         super(applicationcontext, "map.db", null, 1);
@@ -36,9 +33,7 @@ public class DBController extends SQLiteOpenHelper {
         database.execSQL(query);
         query_marker = "CREATE TABLE markers ( _id INTEGER PRIMARY KEY AUTOINCREMENT, marker_id TEXT, title TEXT, snippet TEXT, phone TEXT ,image_url TEXT)";
         database.execSQL(query_marker);
-//        for (int i=0;i<25;i++){
-//            database.execSQL("INSERT INTO favourites(name,phone,latitude,longitude) VALUES ('"+i+"asd','98745"+i+"','1234"+i+"','9874')");
-//        }
+
     }
 
     @Override
