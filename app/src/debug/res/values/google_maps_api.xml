@@ -7,12 +7,13 @@
 https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=00:21:69:6D:46:DB:94:20:E0:86:78:7A:B7:4A:CC:A3:8A:B8:E1:17%3Bcom.zeekoi.map
 
     You can also add your credentials to an existing key, using this line:
-    00:21:69:6D:46:DB:94:20:E0:86:78:7A:B7:4A:CC:A3:8A:B8:E1:17;com.zeekoi.map
-
+    00:21:69:6D:46:DB:94:20:E0:86:78:7A:B7:4A:CC:A3:8A:B8:E1:17;com.zeekoi.map         debug
+A5:2E:70:49:EE:01:26:5B:2F:70:83:C1:4D:63:B7:DC:7B:92:8F:3B;com.zeekoi.map          release build
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         AIzaSyAZl7orai9YOSo8R7VWcgyzPYrF5zF0A4U
+        <!--AIzaSyC-O6KHCqGvc0AfXrOdD5sr5Xs1uP45tlw-->
     </string>
 </resources>

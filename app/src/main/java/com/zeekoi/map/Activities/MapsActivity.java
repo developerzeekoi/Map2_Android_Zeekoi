@@ -17,7 +17,6 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Spanned;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +30,6 @@ import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
@@ -51,10 +49,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.jpardogo.android.googleprogressbar.library.GoogleProgressBar;
-import com.kogitune.activity_transition.ActivityTransitionLauncher;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nispok.snackbar.Snackbar;
 import com.vstechlab.easyfonts.EasyFonts;
 import com.zeekoi.map.Listeners.OnCALLWindowElemTouchListener;
 import com.zeekoi.map.Listeners.OnInfoWindowElemTouchListener;
@@ -69,6 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity {
+    private static final double EARTH_RADIUS = 6378100.0;
     AppLocationService appLocationService;
     DBController controller = new DBController(this);
     boolean doubleBackToExitPressedOnce = false;
@@ -94,8 +93,6 @@ public class MapsActivity extends AppCompatActivity {
     private Marker markerBaseLoc;
     private HashMap<String, String> MarkersDB;
     private Polyline polyline;
-
-    private static final double EARTH_RADIUS = 6378100.0;
     private int offset;
 
     public static int getPixelsFromDp(Context context, float dp) {
@@ -225,11 +222,13 @@ public class MapsActivity extends AppCompatActivity {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-
-
+                Snackbar.with(getApplicationContext()) // context
+                        .text("Routing...Wait a moment")
+                        .show(MapsActivity.this);
+                
                 if (session.getButtonFlag().equals("1")) { //base location --online
 
-                    Routing routing_BaseLoc = new Routing(Routing.TravelMode.DRIVING);
+                    final Routing routing_BaseLoc = new Routing(Routing.TravelMode.DRIVING);
                     routing_BaseLoc.registerListener(new RoutingListener() {
                         @Override
                         public void onRoutingFailure() {
@@ -254,6 +253,14 @@ public class MapsActivity extends AppCompatActivity {
                             polyOptions.width(12);
                             polyOptions.addAll(mPolyOptions.getPoints());
                             polyline = mMap.addPolyline(polyOptions);
+
+                            System.out.println("getname " + route.getName());
+                            System.out.println("getcopyright " + route.getCopyright());
+                            System.out.println("nowfal");
+                            System.out.println("getdistancetext " + route.getDistanceText());
+                            System.out.println("getduration text " + route.getDurationText());
+                            System.out.println("getendadreestext " + route.getEndAddressText());
+                            System.out.println("getnwarning " + route.getWarning());
                         }
                     });
 
@@ -282,6 +289,8 @@ public class MapsActivity extends AppCompatActivity {
 //                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
 //
 //                        mMap.moveCamera(center);
+                            // activity where it is displayed
+
                             if (polyline != null)
                                 polyline.remove();
 
@@ -292,6 +301,19 @@ public class MapsActivity extends AppCompatActivity {
                             polyOptions.width(12);
                             polyOptions.addAll(mPolyOptions.getPoints());
                             polyline = mMap.addPolyline(polyOptions);
+
+                            session.setAddressText(route.getEndAddressText());
+                            session.setDistanceText(route.getDistanceText());
+                            session.setDurationText(route.getDurationText());
+
+
+                            System.out.println("getname " + route.getName());
+                            System.out.println("getcopyright " + route.getCopyright());
+                            System.out.println("nowfal");
+                            System.out.println("getdistancetext " + route.getDistanceText());
+                            System.out.println("getduration text " + route.getDurationText());
+                            System.out.println("getendadreestext " + route.getEndAddressText());
+                            System.out.println("getnwarning " + route.getWarning());
 
                             // Start marker
 //                        MarkerOptions options = new MarkerOptions();
@@ -619,8 +641,8 @@ public class MapsActivity extends AppCompatActivity {
                         if (marker.getTitle().equals("Base Location")) { // disabling activity loading --baselocation marker
                             System.out.println("no activity for base location");
                         } else {
-                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
-//                            Intent io = new Intent(getApplicationContext(), AnimateToolbar.class);
+//                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+                            Intent io = new Intent(getApplicationContext(), CollapsingToolbar.class);
                             session.setTemplat(marker.getPosition().latitude);
                             session.setTempLong(marker.getPosition().longitude);
                             io.putExtra("markerID", marker.getId());

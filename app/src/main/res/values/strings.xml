@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Map</string>
+    <string name="app_name">MapV2</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_fav_activity">Favourites</string>
     <string name="API_KEY">1234567</string>
@@ -12,4 +12,5 @@
     <string name="loreum">Quam ob rem vita qu;  uam ad iuvare
         esse quicquid extra urbis po.</string>
     <string name="title_activity_animate_toolbar">AnimateToolbar</string>
+    <string name="title_activity_collapsing_toolbar">CollapsingToolbar</string>
 </resources>

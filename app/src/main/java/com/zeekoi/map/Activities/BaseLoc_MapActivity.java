@@ -2,10 +2,8 @@ package com.zeekoi.map.Activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,7 +22,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -36,14 +32,14 @@ import com.zeekoi.map.R;
 
 public class BaseLoc_MapActivity extends AppCompatActivity {
 
-    private GoogleMap mMap;
     AppLocationService appLocationService;
+    boolean rangeFlag = false;
+    private GoogleMap mMap;
     private GoogleProgressBar progressBar;
     private Marker marker;
     private SessionManager session;
     private Toast mToast;
     private Circle circle;
-    boolean rangeFlag = false;
     private Location gpsLocation;
     private Location nwLocation;
     private double lat,lon;
@@ -189,6 +185,22 @@ public class BaseLoc_MapActivity extends AppCompatActivity {
                     .title("Base Location")
                     .visible(true));
             LatLng latLng = new LatLng(lat, lon);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
+            mMap.animateCamera(cameraUpdate);
+
+        } else {
+
+            double latitude = Double.longBitsToDouble(session.getLatitudeBaseLoc());
+            double longitude = Double.longBitsToDouble(session.getLongitudeBaseLoc());
+            marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    .title("Base Location")
+                    .visible(true));
+
+            LatLng latLng = new LatLng(latitude, longitude);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
             mMap.animateCamera(cameraUpdate);
         }
