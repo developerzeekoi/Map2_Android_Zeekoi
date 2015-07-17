@@ -62,7 +62,7 @@ public class DBController extends SQLiteOpenHelper {
 
         database.insert("markers", null, values);
         database.close();
-        System.out.println("markers inserted "+values.size());
+//        System.out.println("markers inserted "+values.size());
     }
 
     public void dropMarkers(){

@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -74,7 +75,8 @@ public class MapsActivity extends AppCompatActivity {
     private ViewGroup infoWindow;
     private TextView infoTitle, idForDelete;
     private TextView infoSnippet, phoneSnippet;
-    private Button infoButton, callButton, baseLoc, MyLoc;
+    //    private Button infoButton, callButton ;
+    private FloatingActionButton baseLoc, MyLoc;
     private ImageButton imginfowindow;
     private OnInfoWindowElemTouchListener infoButtonListener;
     private OnCALLWindowElemTouchListener callButtonListener;
@@ -94,6 +96,7 @@ public class MapsActivity extends AppCompatActivity {
     private HashMap<String, String> MarkersDB;
     private Polyline polyline;
     private int offset;
+    private boolean infoWindowClick = false;
 
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -113,8 +116,8 @@ public class MapsActivity extends AppCompatActivity {
 
         progressBar = (GoogleProgressBar) findViewById(R.id.progressBar);
 
-        baseLoc = (Button) findViewById(R.id.baseLocation);
-        MyLoc = (Button) findViewById(R.id.myLocation);
+//        baseLoc = (FloatingActionButton) findViewById(R.id.baseLocation);
+//        MyLoc = (FloatingActionButton) findViewById(R.id.myLocation);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -143,11 +146,12 @@ public class MapsActivity extends AppCompatActivity {
         // MapWrapperLayout initialization
         // 39 - default marker height
         // 20 - offset between the default InfoWindow bottom edge and it's content bottom edge
-        mapWrapperLayout.init(mMap, getPixelsFromDp(this, 10 + 5));
+//        mapWrapperLayout.init(mMap, getPixelsFromDp(this, 10 + 5));
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_window_info, null);
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
         this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-        callButton = (Button) infoWindow.findViewById(R.id.call_but);
+//        callButton = (Button) infoWindow.findViewById(R.id.call_but);
+        View emptyView = new View(getApplicationContext());
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         session = new SessionManager(getApplicationContext());
@@ -180,44 +184,47 @@ public class MapsActivity extends AppCompatActivity {
                     session.getRange());
         }
 
-        baseLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (Double.longBitsToDouble(session.getLatitudeBaseLoc()) == 0.0) {
+//        baseLoc.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                if (Double.longBitsToDouble(session.getLatitudeBaseLoc()) == 0.0) {
+//
+//                    Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
+//                    startActivity(BaseLocIntent);
+//
+//                } else {
+//                    session.setButtonFlag("1");
+//                    mMap.clear();
+//                    progressBar.setVisibility(View.VISIBLE);
+//                    fetchMapDataApi(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
+//                            Double.longBitsToDouble(session.getLongitudeBaseLoc()),
+//                            session.getRange());
+//
+//                }
+//            }
+//        });
 
-                    Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
-                    startActivity(BaseLocIntent);
+//        MyLoc.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                progressBar.setVisibility(View.VISIBLE);
+//                if (gpsLocation != null) {
+//                    mMap.clear();
+//                    session.setButtonFlag("0");
+//                    latitude = gpsLocation.getLatitude();
+//                    longitude = gpsLocation.getLongitude();
+//                    fetchMapDataApi(latitude, longitude, session.getRange());
+//                } else {
+//                    session.setButtonFlag("0");
+//                    mMap.clear();
+//                    showSettingsAlert("GPS");
+//                }
+//            }
+//        });
 
-                } else {
-                    session.setButtonFlag("1");
-                    mMap.clear();
-                    progressBar.setVisibility(View.VISIBLE);
-                    fetchMapDataApi(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
-                            Double.longBitsToDouble(session.getLongitudeBaseLoc()),
-                            session.getRange());
 
-                }
-            }
-        });
 
-        MyLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (gpsLocation != null) {
-                    mMap.clear();
-                    session.setButtonFlag("0");
-                    latitude = gpsLocation.getLatitude();
-                    longitude = gpsLocation.getLongitude();
-                    fetchMapDataApi(latitude, longitude, session.getRange());
-                } else {
-                    session.setButtonFlag("0");
-                    mMap.clear();
-                    showSettingsAlert("GPS");
-                }
-            }
-        });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -225,7 +232,7 @@ public class MapsActivity extends AppCompatActivity {
                 Snackbar.with(getApplicationContext()) // context
                         .text("Routing...Wait a moment")
                         .show(MapsActivity.this);
-                
+
                 if (session.getButtonFlag().equals("1")) { //base location --online
 
                     final Routing routing_BaseLoc = new Routing(Routing.TravelMode.DRIVING);
@@ -348,17 +355,19 @@ public class MapsActivity extends AppCompatActivity {
 
                     if (marker.getTitle().equals("My Position")) {
                         System.out.println("no activity for base location");
-                        callButton.setVisibility(View.INVISIBLE);
+//                        callButton.setVisibility(View.INVISIBLE);
 
                     } else {
-                        callButton.setVisibility(View.VISIBLE);
+//                        callButton.setVisibility(View.VISIBLE);
 
                     }
                     if (marker.getTitle().equals("Base Location")) {
                         System.out.println("no activity for base location");
-                        callButton.setVisibility(View.INVISIBLE);
+                        infoWindowClick = true;
+//                        callButton.setVisibility(View.INVISIBLE);
                     } else {
-                        callButton.setVisibility(View.VISIBLE);
+//                        callButton.setVisibility(View.VISIBLE);
+                        infoWindowClick = false;
 
                     }
                 } catch (NullPointerException rr) {
@@ -373,24 +382,27 @@ public class MapsActivity extends AppCompatActivity {
 //                infoWindow.setVisibility(View.VISIBLE);
 
                 try {
+//                    callButton.setVisibility(View.INVISIBLE);
                     infoTitle.setText(marker.getTitle());
                     infoTitle.setTypeface(EasyFonts.robotoBold(getApplicationContext()));
                     infoSnippet.setText(marker.getSnippet());
                     infoSnippet.setTypeface(EasyFonts.caviarDreamsBoldItalic(getApplicationContext()));
                     markerTemp = marker;
                     if (marker.getTitle().equals("My Position")) {
-                        System.out.println("no activity for base location");
-                        callButton.setVisibility(View.INVISIBLE);
+                        System.out.println("no activity for my location");
+//                        callButton.setVisibility(View.INVISIBLE);
 
                     } else {
-                        callButton.setVisibility(View.VISIBLE);
+//                        callButton.setVisibility(View.VISIBLE);
 
                     }
                     if (marker.getTitle().equals("Base Location")) {
                         System.out.println("no activity for base location");
-                        callButton.setVisibility(View.INVISIBLE);
+                        infoWindowClick = true;
+//                        callButton.setVisibility(View.INVISIBLE);
                     } else {
-                        callButton.setVisibility(View.VISIBLE);
+                        infoWindowClick = false;
+//                        callButton.setVisibility(View.VISIBLE);
 
                     }
 
@@ -405,6 +417,25 @@ public class MapsActivity extends AppCompatActivity {
                 return infoWindow;
             }
         });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                if (!infoWindowClick) {
+
+                    Intent io = new Intent(getApplicationContext(), CollapsingToolbar.class);
+                    session.setTemplat(marker.getPosition().latitude);
+                    session.setTempLong(marker.getPosition().longitude);
+                    io.putExtra("markerID", marker.getId());
+//                            ActivityTransitionLauncher.with(MapsActivity.this).from(v).launch(io);
+                    startActivity(io);
+//                    overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+                } else {
+
+                }
+            }
+        });
+
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
@@ -453,10 +484,20 @@ public class MapsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //if cancel dialog box ..fetch location from network
                         Location nwLocation = appLocationService.getLocation(LocationManager.NETWORK_PROVIDER);
-                        latitude = nwLocation.getLatitude();
-                        longitude = nwLocation.getLongitude();
                         if (nwLocation != null) {
+                            latitude = nwLocation.getLatitude();
+                            longitude = nwLocation.getLongitude();
+
                             fetchMapDataApi(nwLocation.getLatitude(), nwLocation.getLongitude(), session.getRange());
+                        } else {
+                            mToast.setText("Mobile Network location not found");
+                            mToast.show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            }, 3000);
                         }
                         dialog.cancel();
                     }
@@ -486,6 +527,7 @@ public class MapsActivity extends AppCompatActivity {
             }
             Intent favIntent = new Intent(getApplicationContext(), fav_activity.class);
             startActivity(favIntent);
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
         }
         if (id == R.id.select_range) {
             try {
@@ -520,7 +562,44 @@ public class MapsActivity extends AppCompatActivity {
         if (id == R.id.setBaseLocation) {
             Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
             startActivity(BaseLocIntent);
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
         }
+
+        if (id == R.id.myLocationMenu) {
+            progressBar.setVisibility(View.VISIBLE);
+            if (gpsLocation != null) {
+                mMap.clear();
+                session.setButtonFlag("0");
+                latitude = gpsLocation.getLatitude();
+                longitude = gpsLocation.getLongitude();
+                fetchMapDataApi(latitude, longitude, session.getRange());
+            } else {
+                session.setButtonFlag("0");
+                mMap.clear();
+                showSettingsAlert("GPS");
+            }
+        }
+
+        if (id == R.id.baseLocationMenu) {
+
+            progressBar.setVisibility(View.VISIBLE);
+            if (Double.longBitsToDouble(session.getLatitudeBaseLoc()) == 0.0) {
+
+                Intent BaseLocIntent = new Intent(getApplicationContext(), BaseLoc_MapActivity.class);
+                startActivity(BaseLocIntent);
+
+            } else {
+                session.setButtonFlag("1");
+                mMap.clear();
+                progressBar.setVisibility(View.VISIBLE);
+                fetchMapDataApi(Double.longBitsToDouble(session.getLatitudeBaseLoc()),
+                        Double.longBitsToDouble(session.getLongitudeBaseLoc()),
+                        session.getRange());
+
+            }
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -543,6 +622,8 @@ public class MapsActivity extends AppCompatActivity {
                 JsonElement jelement = new JsonParser().parse(response);
                 JsonObject jobject = jelement.getAsJsonObject();
                 JsonArray jarray = jobject.getAsJsonArray("data");
+
+
                 session.setMarkerCount(String.valueOf(jarray.size()));
                 session.setLastLocLatitude(latitude);
                 session.setLastLocLongitude(longitude);
@@ -556,6 +637,11 @@ public class MapsActivity extends AppCompatActivity {
                     String address = jobject.get("address").getAsString();
                     String phone = jobject.get("phone").getAsString();
                     String phoneAddress = "<strong>" + address + "</strong><br>Ph. " + phone;
+                    //test
+//                    System.out.println("etra" + jobject.getAsJsonArray("extrafield").get(i).getAsString());
+//                    System.out.println("extra " + jobject.get("extrafield").getAsString());
+
+                    //test end
                     latJSON = jobject.get("lat").getAsDouble();
                     longJSON = jobject.get("long").getAsDouble();
 //                    Spanned spannedContent = Html.fromHtml(nameAddress);
@@ -620,7 +706,7 @@ public class MapsActivity extends AppCompatActivity {
 
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 9);
                     mMap.animateCamera(cameraUpdate);
-                    progressBar.setVisibility(View.INVISIBLE);
+//                    progressBar.setVisibility(View.INVISIBLE);
 
                 } else {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
@@ -630,29 +716,29 @@ public class MapsActivity extends AppCompatActivity {
                     LatLngBounds bounds = b.build();
                     //Change the padding as per needed
 
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
-                    progressBar.setVisibility(View.INVISIBLE);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 9));
+//                    progressBar.setVisibility(View.INVISIBLE);
                 }
                 // view button click event --ViewButton --misplaced view button to call button
-                callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
-                    @Override
-                    protected void onClickConfirmed(View v, Marker marker) {
-
-                        if (marker.getTitle().equals("Base Location")) { // disabling activity loading --baselocation marker
-                            System.out.println("no activity for base location");
-                        } else {
-//                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
-                            Intent io = new Intent(getApplicationContext(), CollapsingToolbar.class);
-                            session.setTemplat(marker.getPosition().latitude);
-                            session.setTempLong(marker.getPosition().longitude);
-                            io.putExtra("markerID", marker.getId());
-//                            ActivityTransitionLauncher.with(MapsActivity.this).from(v).launch(io);
-                            startActivity(io);
-                        }
-                    }
-                };
-                callButton.setOnTouchListener(callButtonListener);
-                progressBar.setVisibility(View.INVISIBLE);
+//                callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
+//                    @Override
+//                    protected void onClickConfirmed(View v, Marker marker) {
+//
+//                        if (marker.getTitle().equals("Base Location")) { // disabling activity loading --baselocation marker
+//                            System.out.println("no activity for base location");
+//                        } else {
+////                            Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+//                            Intent io = new Intent(getApplicationContext(), CollapsingToolbar.class);
+//                            session.setTemplat(marker.getPosition().latitude);
+//                            session.setTempLong(marker.getPosition().longitude);
+//                            io.putExtra("markerID", marker.getId());
+////                            ActivityTransitionLauncher.with(MapsActivity.this).from(v).launch(io);
+//                            startActivity(io);
+//                        }
+//                    }
+//                };
+//                callButton.setOnTouchListener(callButtonListener);
+//                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -736,27 +822,28 @@ if(session.getResponse() == null){
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
     }
     //ViewButton on info window --misnamed button
-    callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
-        @Override
-        protected void onClickConfirmed(View v, Marker marker) {
-            if (marker.getTitle().equals("Base Location")) { //disable activity luanch --base location
-                System.out.println("no activity for base location");
-            } else {
+//    callButtonListener = new OnCALLWindowElemTouchListener(callButton, getApplicationContext()) {
+//        @Override
+//        protected void onClickConfirmed(View v, Marker marker) {
+//            if (marker.getTitle().equals("Base Location")) { //disable activity luanch --base location
+//                System.out.println("no activity for base location");
+//            } else {
+//
+//                Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
+//                io.putExtra("markerID", marker.getId());
+//                session.setTemplat(marker.getPosition().latitude);
+//                session.setTempLong(marker.getPosition().longitude);
+//                startActivity(io);
+//            }
+//        }
+//    };
+//    callButton.setOnTouchListener(callButtonListener);
 
-                Intent io = new Intent(getApplicationContext(), StoreInfoActivity.class);
-                io.putExtra("markerID", marker.getId());
-                session.setTemplat(marker.getPosition().latitude);
-                session.setTempLong(marker.getPosition().longitude);
-                startActivity(io);
-            }
-        }
-    };
-    callButton.setOnTouchListener(callButtonListener);
 
-    progressBar.setVisibility(View.INVISIBLE);
 }
             } //onFailure ends
         });
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override

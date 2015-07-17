@@ -3,10 +3,17 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">#ff567fc5</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowContentTransitions">true</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="cust_dialog" parent="@android:style/Theme.Dialog">
+        <!-- enable overlapping of exiting and entering activities-->
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+
         <item name="android:windowTitleStyle">@style/dialog_title_style</item>
         <item name="android:background">@android:color/white</item>
         <item name="android:theme">@android:style/Theme.Holo.Light</item>

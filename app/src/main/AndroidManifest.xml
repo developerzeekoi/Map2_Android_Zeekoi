@@ -56,6 +56,7 @@
             android:label="Store" />
         <activity
             android:name=".Activities.CollapsingToolbar"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_collapsing_toolbar">
         </activity>
     </application>

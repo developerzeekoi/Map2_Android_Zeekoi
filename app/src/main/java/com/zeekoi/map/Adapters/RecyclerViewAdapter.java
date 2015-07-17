@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,47 +30,20 @@ import com.vstechlab.easyfonts.EasyFonts;
 import com.zeekoi.map.Managers.DBController;
 import com.zeekoi.map.R;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapter.SimpleViewHolder> {
 
-    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
-        SwipeLayout swipeLayout;
-        TextView nameAddress, phone, idForDelete;
-        Button buttonDelete;
-        ImageView callView;
-
-
-        public SimpleViewHolder(View itemView) {
-            super(itemView);
-            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
-            nameAddress = (TextView) itemView.findViewById(R.id.name);
-            phone = (TextView) itemView.findViewById(R.id.phone_storeinfo);
-            buttonDelete = (Button) itemView.findViewById(R.id.delete);
-            callView = (ImageView) itemView.findViewById(R.id.callImg);
-            idForDelete = (TextView) itemView.findViewById(R.id.idTemp);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(getClass().getSimpleName(), "onItemSelected: " + nameAddress.getText().toString());
-                }
-            });
-        }
-    }
-
-    private Context mContext;
-    ArrayList<HashMap<String, String>> mDataset = new ArrayList<HashMap<String, String>>();
-    private static String ID = "id";
     private static final String NAME = "name";
     private static final String ADDRESS = "address";
     private static final String PHONE = "phone";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
-
-
+    private static String ID = "id";
+    ArrayList<HashMap<String, String>> mDataset = new ArrayList<HashMap<String, String>>();
+    private Context mContext;
+    private int lastPosition = -1;
     public RecyclerViewAdapter(Context context, ArrayList<HashMap<String, String>> entries) {
         this.mContext = context;
         this.mDataset = new ArrayList<HashMap<String, String>>(entries);
@@ -139,6 +114,16 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
         viewHolder.phone.setTypeface(EasyFonts.droidSerifBoldItalic(mContext));
         viewHolder.idForDelete.setText(id_temp);
         mItemManger.bindView(viewHolder.itemView, position);
+//        setAnimation(viewHolder.swipeLayout, position);
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.slideup_left_gnow);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
     @Override
@@ -149,5 +134,30 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     @Override
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
+    }
+
+    public static class SimpleViewHolder extends RecyclerView.ViewHolder {
+        SwipeLayout swipeLayout;
+        TextView nameAddress, phone, idForDelete;
+        Button buttonDelete;
+        ImageView callView;
+
+
+        public SimpleViewHolder(View itemView) {
+            super(itemView);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
+            nameAddress = (TextView) itemView.findViewById(R.id.name);
+            phone = (TextView) itemView.findViewById(R.id.phone_storeinfo);
+            buttonDelete = (Button) itemView.findViewById(R.id.delete);
+            callView = (ImageView) itemView.findViewById(R.id.callImg);
+            idForDelete = (TextView) itemView.findViewById(R.id.idTemp);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(getClass().getSimpleName(), "onItemSelected: " + nameAddress.getText().toString());
+                }
+            });
+        }
     }
 }

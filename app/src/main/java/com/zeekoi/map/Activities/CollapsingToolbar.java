@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +45,7 @@ public class CollapsingToolbar extends AppCompatActivity {
     private Double longitude;
     private GoogleProgressBar progressBar;
     private FloatingActionButton fav;
+    private CardView card1, card2, card3, card4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,16 @@ public class CollapsingToolbar extends AppCompatActivity {
 
         session = new SessionManager(getApplicationContext());
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        card1 = (CardView) findViewById(R.id.card1);
+        card2 = (CardView) findViewById(R.id.card2);
+        card3 = (CardView) findViewById(R.id.card3);
+        card4 = (CardView) findViewById(R.id.card5);
+//        card1.setVisibility(View.INVISIBLE);
+        card2.setVisibility(View.INVISIBLE);
+        card3.setVisibility(View.INVISIBLE);
+        card4.setVisibility(View.INVISIBLE);
+
+
         try {
             Intent i = getIntent();
             String markerID = i.getStringExtra("markerID");
@@ -81,13 +95,16 @@ public class CollapsingToolbar extends AppCompatActivity {
 
         }
 
+        progressBar = (GoogleProgressBar) findViewById(R.id.googleProgressbar);
+        progressBar.setVisibility(View.VISIBLE);
+
         loadImage();
+
 
         fav = (FloatingActionButton) findViewById(R.id.fav);
         call = (ResizableImageView) findViewById(R.id.call);
         msg = (ResizableImageView) findViewById(R.id.msg);
-        progressBar = (GoogleProgressBar) findViewById(R.id.googleProgressbar);
-        progressBar.setVisibility(View.VISIBLE);
+
         TextView title = (TextView) findViewById(R.id.markerTitle);
         title.setText(String.valueOf(Html.fromHtml(markerTitle)));
         title.setTypeface(EasyFonts.caviarDreamsBold(getApplicationContext()));
@@ -190,6 +207,26 @@ public class CollapsingToolbar extends AppCompatActivity {
             }
         });
 
+//        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup_left_gnow);
+//        card1.setVisibility(View.VISIBLE);
+//        card1.startAnimation(animation);
+        card1.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup_left_gnow));
+
+        Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup_left_gnow);
+        card2.setVisibility(View.VISIBLE);
+        card2.startAnimation(animation1);
+
+
+        Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup_left_gnow);
+        card3.setVisibility(View.VISIBLE);
+        card3.startAnimation(animation2);
+
+
+        Animation animation3 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slideup_left_gnow);
+        card4.setVisibility(View.VISIBLE);
+        card4.startAnimation(animation3);
+
+
     }
 
 //    @Override
@@ -218,6 +255,9 @@ public class CollapsingToolbar extends AppCompatActivity {
 
     private void loadImage() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-        Glide.with(this).load(imageURL).centerCrop().into(imageView);
+        Glide.with(this).load(imageURL)
+                .into(imageView);
+
+
     }
 }
